@@ -48,7 +48,7 @@ const handler = async (req: Request): Promise<Response> => {
       },
       body: JSON.stringify({
         from: "Shipping Notifications <onboarding@resend.dev>",
-        to: ["momultiservicesllc@gmail.com"],
+        to: ["mjawara4@icloud.com"], // Changed to your verified email
         subject: "New Shipping Request",
         html: emailHtml,
       }),

@@ -20,7 +20,11 @@ const formSchema = z.object({
   phone: z.string().min(10, "Please enter a valid phone number"),
   fromLocation: z.string().min(2, "Please enter a valid location"),
   toLocation: z.string().min(2, "Please enter a valid location"),
-  weight: z.string().transform((val) => parseFloat(val) || 0), // Transform string to number with fallback
+  weight: z.string().transform((val) => {
+    const parsed = parseFloat(val);
+    if (isNaN(parsed)) return 0;
+    return parsed;
+  }),
   packageType: z.string(),
 });
 
@@ -127,7 +131,12 @@ export const ShippingForm = () => {
             <FormItem>
               <FormLabel>Package Weight (lbs)</FormLabel>
               <FormControl>
-                <Input type="number" {...field} />
+                <Input 
+                  type="number" 
+                  step="0.1"
+                  min="0"
+                  {...field} 
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
