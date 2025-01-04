@@ -15,7 +15,7 @@ export const submitShippingRequest = async (values: ShippingFormData) => {
   const estimatedPrice = calculatePrice(values.weight, values.packageType);
   
   // Save to Supabase only
-  const { error: supabaseError } = await supabase
+  const { data, error: supabaseError } = await supabase
     .from('ship_site_data')
     .insert({
       name: values.name,
@@ -26,9 +26,15 @@ export const submitShippingRequest = async (values: ShippingFormData) => {
       package_type: values.packageType,
       estimated_price: estimatedPrice,
       type: 'shipping'
-    });
+    })
+    .select()
+    .single();
 
-  if (supabaseError) throw supabaseError;
-  
-  return { estimatedPrice };
+  if (supabaseError) {
+    console.error('Supabase Error:', supabaseError);
+    throw new Error('Failed to submit shipping request');
+  }
+
+  console.log('Shipping request submitted successfully:', data);
+  return { estimatedPrice, data };
 };

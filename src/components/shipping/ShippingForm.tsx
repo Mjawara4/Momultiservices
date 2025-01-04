@@ -15,7 +15,7 @@ const formSchema = z.object({
   fromLocation: z.string().min(2, "Please enter a valid location"),
   toLocation: z.string().min(2, "Please enter a valid location"),
   weight: z.coerce.number().min(0, "Weight must be a positive number"),
-  packageType: z.string(),
+  packageType: z.string().min(1, "Please select a package type"),
 });
 
 export type ShippingFormData = z.infer<typeof formSchema>;
@@ -37,11 +37,11 @@ export const ShippingForm = () => {
 
   const onSubmit = async (values: ShippingFormData) => {
     try {
-      await submitShippingRequest(values);
+      const result = await submitShippingRequest(values);
       
       toast({
         title: "Success!",
-        description: "Shipping request submitted successfully.",
+        description: `Shipping request submitted successfully. Estimated price: $${result.estimatedPrice}`,
       });
       
       form.reset();
