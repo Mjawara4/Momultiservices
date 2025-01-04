@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/accordion";
 import { useToast } from "@/components/ui/use-toast";
 import { Card } from "@/components/ui/card";
+import { supabase } from "@/integrations/supabase/client";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -40,11 +41,39 @@ const Inquire = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    // TODO: Add Supabase integration here
-    toast({
-      title: "Inquiry Received",
-      description: "We'll get back to you as soon as possible.",
-    });
+    try {
+      const { data, error: supabaseError } = await supabase
+        .from('ship_site_data')
+        .insert({
+          name: values.name,
+          phone: values.phone,
+          question: values.question,
+          type: 'inquiry'
+        })
+        .select()
+        .single();
+
+      if (supabaseError) {
+        console.error('Supabase Error:', supabaseError);
+        throw new Error('Failed to submit inquiry');
+      }
+
+      console.log('Inquiry submitted successfully:', data);
+      
+      toast({
+        title: "Inquiry Received",
+        description: "We'll get back to you as soon as possible.",
+      });
+      
+      form.reset();
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "There was a problem submitting your inquiry.",
+      });
+    }
   };
 
   return (
