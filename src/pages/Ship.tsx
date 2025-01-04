@@ -21,7 +21,7 @@ const formSchema = z.object({
   phone: z.string().min(10, "Please enter a valid phone number"),
   fromLocation: z.string().min(2, "Please enter a valid location"),
   toLocation: z.string().min(2, "Please enter a valid location"),
-  weight: z.string().transform((val) => Number(val) || 0),
+  weight: z.string().transform((val) => parseFloat(val) || 0),
   packageType: z.string(),
 });
 
@@ -53,38 +53,58 @@ const Ship = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const estimatedPrice = calculatePrice(values.weight, values.packageType);
     
-    const { error } = await supabase
-      .from('ship_site_data')
-      .insert({
-        name: values.name,
-        phone: values.phone,
-        from_location: values.fromLocation,
-        to_location: values.toLocation,
-        weight: values.weight,
-        package_type: values.packageType,
-        estimated_price: estimatedPrice,
-        type: 'shipping'
+    try {
+      // First, save to Supabase
+      const { error: supabaseError } = await supabase
+        .from('ship_site_data')
+        .insert({
+          name: values.name,
+          phone: values.phone,
+          from_location: values.fromLocation,
+          to_location: values.toLocation,
+          weight: values.weight,
+          package_type: values.packageType,
+          estimated_price: estimatedPrice,
+          type: 'shipping'
+        });
+
+      if (supabaseError) throw supabaseError;
+
+      // Then, send email notification
+      const { error: emailError } = await supabase.functions.invoke('send-shipping-notification', {
+        body: {
+          shippingData: {
+            name: values.name,
+            phone: values.phone,
+            from_location: values.fromLocation,
+            to_location: values.toLocation,
+            weight: values.weight,
+            package_type: values.packageType,
+            estimated_price: estimatedPrice
+          }
+        }
       });
 
-    if (error) {
+      if (emailError) throw emailError;
+
+      toast({
+        title: "Success!",
+        description: `Shipping request submitted. Estimated cost: $${estimatedPrice}`,
+      });
+      
+      form.reset();
+    } catch (error) {
+      console.error('Error:', error);
       toast({
         variant: "destructive",
         title: "Error",
         description: "There was a problem submitting your shipping request.",
       });
-      console.error('Error:', error);
-      return;
     }
-
-    toast({
-      title: "Shipping Request Submitted",
-      description: `Estimated shipping cost: $${estimatedPrice}`,
-    });
-    form.reset();
   };
 
   return (
-    <div className="container max-w-2xl mx-auto">
+    <div className="container max-w-2xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-8 text-center">Ship a Package</h1>
       
       <Card className="p-6">
