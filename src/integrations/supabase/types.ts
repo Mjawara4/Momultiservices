@@ -9,7 +9,48 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      ship_site_data: {
+        Row: {
+          created_at: string
+          estimated_price: number | null
+          from_location: string | null
+          id: string
+          name: string
+          package_type: string | null
+          phone: string
+          question: string | null
+          to_location: string | null
+          type: string
+          weight: number | null
+        }
+        Insert: {
+          created_at?: string
+          estimated_price?: number | null
+          from_location?: string | null
+          id?: string
+          name: string
+          package_type?: string | null
+          phone: string
+          question?: string | null
+          to_location?: string | null
+          type: string
+          weight?: number | null
+        }
+        Update: {
+          created_at?: string
+          estimated_price?: number | null
+          from_location?: string | null
+          id?: string
+          name?: string
+          package_type?: string | null
+          phone?: string
+          question?: string | null
+          to_location?: string | null
+          type?: string
+          weight?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
