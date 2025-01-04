@@ -14,7 +14,7 @@ const calculatePrice = (weight: number, packageType: string) => {
 export const submitShippingRequest = async (values: ShippingFormData) => {
   const estimatedPrice = calculatePrice(values.weight, values.packageType);
   
-  // First, save to Supabase
+  // Save to Supabase only
   const { error: supabaseError } = await supabase
     .from('ship_site_data')
     .insert({
@@ -29,23 +29,6 @@ export const submitShippingRequest = async (values: ShippingFormData) => {
     });
 
   if (supabaseError) throw supabaseError;
-
-  // Then, send email notification
-  const { error: emailError } = await supabase.functions.invoke('send-shipping-notification', {
-    body: {
-      shippingData: {
-        name: values.name,
-        phone: values.phone,
-        from_location: values.fromLocation,
-        to_location: values.toLocation,
-        weight: values.weight,
-        package_type: values.packageType,
-        estimated_price: estimatedPrice
-      }
-    }
-  });
-
-  if (emailError) throw emailError;
   
   return { estimatedPrice };
 };

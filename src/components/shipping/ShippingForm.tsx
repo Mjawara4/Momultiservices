@@ -20,11 +20,7 @@ const formSchema = z.object({
   phone: z.string().min(10, "Please enter a valid phone number"),
   fromLocation: z.string().min(2, "Please enter a valid location"),
   toLocation: z.string().min(2, "Please enter a valid location"),
-  weight: z.string().transform((val) => {
-    const parsed = parseFloat(val);
-    if (isNaN(parsed)) return 0;
-    return parsed;
-  }),
+  weight: z.coerce.number().min(0, "Weight must be a positive number"),
   packageType: z.string(),
 });
 
@@ -40,7 +36,7 @@ export const ShippingForm = () => {
       phone: "",
       fromLocation: "",
       toLocation: "",
-      weight: "",
+      weight: 0,
       packageType: "",
     },
   });
@@ -135,7 +131,8 @@ export const ShippingForm = () => {
                   type="number" 
                   step="0.1"
                   min="0"
-                  {...field} 
+                  {...field}
+                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
                 />
               </FormControl>
               <FormMessage />
