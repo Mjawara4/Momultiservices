@@ -7,6 +7,7 @@ import Layout from "./components/Layout";
 import Index from "./pages/Index";
 import Ship from "./pages/Ship";
 import Inquire from "./pages/Inquire";
+import Calendar from "./pages/Calendar";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ const App = () => (
           <Route path="/" element={<Layout><Index /></Layout>} />
           <Route path="/ship" element={<Layout><Ship /></Layout>} />
           <Route path="/inquire" element={<Layout><Inquire /></Layout>} />
+          <Route path="/calendar" element={<Layout><Calendar /></Layout>} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
