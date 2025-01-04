@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 const corsHeaders = {
@@ -46,7 +45,7 @@ const handler = async (req: Request): Promise<Response> => {
       },
       body: JSON.stringify({
         from: "Shipping Notifications <onboarding@resend.dev>",
-        to: ["your-email@example.com"], // Replace with your email
+        to: ["momultiservicesllc@gmail.com"], // Your email address
         subject: "New Shipping Request",
         html: emailHtml,
       }),
