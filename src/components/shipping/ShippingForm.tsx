@@ -20,7 +20,7 @@ const formSchema = z.object({
   phone: z.string().min(10, "Please enter a valid phone number"),
   fromLocation: z.string().min(2, "Please enter a valid location"),
   toLocation: z.string().min(2, "Please enter a valid location"),
-  weight: z.string().transform((val) => Number(val)), // Transform string to number
+  weight: z.string().transform((val) => parseFloat(val) || 0), // Transform string to number with fallback
   packageType: z.string(),
 });
 
