@@ -56,6 +56,7 @@ const Inquire = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      // Save to Supabase
       const { data, error: supabaseError } = await supabase
         .from('ship_site_data')
         .insert({
@@ -73,6 +74,19 @@ const Inquire = () => {
       if (supabaseError) {
         console.error('Supabase Error:', supabaseError);
         throw new Error('Failed to submit inquiry');
+      }
+
+      // Send email notification
+      const { error: emailError } = await supabase.functions.invoke('send-notifications', {
+        body: {
+          type: 'inquiry',
+          data: values
+        }
+      });
+
+      if (emailError) {
+        console.error('Email Error:', emailError);
+        throw new Error('Failed to send email notification');
       }
 
       console.log('Inquiry submitted successfully:', data);
