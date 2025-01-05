@@ -16,7 +16,6 @@ const formSchema = z.object({
   toLocation: z.string().min(2, "Please enter a valid location"),
   weight: z.coerce.number().min(0, "Weight must be a positive number"),
   packageType: z.string().min(1, "Please select a package type"),
-  country: z.string().min(2, "Please select your country"),
 });
 
 export type ShippingFormData = z.infer<typeof formSchema>;
@@ -33,7 +32,6 @@ export const ShippingForm = () => {
       toLocation: "",
       weight: 0,
       packageType: "",
-      country: "",
     },
   });
 
