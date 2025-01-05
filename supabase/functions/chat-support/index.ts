@@ -40,12 +40,12 @@ serve(async (req) => {
         messages: [
           { 
             role: 'system', 
-            content: 'You are a helpful shipping support assistant. You help users with questions about shipping rates, delivery times, package tracking, and general shipping inquiries. Keep your responses concise and professional.' 
+            content: 'You are a helpful shipping support assistant. Keep responses very brief.' 
           },
           { role: 'user', content: message }
         ],
-        max_tokens: 500,
-        temperature: 0.7,
+        max_tokens: 150,
+        temperature: 0.5,
       }),
     });
 
