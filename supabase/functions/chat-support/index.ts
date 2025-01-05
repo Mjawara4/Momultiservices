@@ -44,7 +44,7 @@ serve(async (req) => {
           },
           { role: 'user', content: message }
         ],
-        max_tokens: 50, // Reduced to minimize token usage
+        max_tokens: 50,
         temperature: 0.5,
       }),
     });
