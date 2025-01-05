@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { Package, Plane, ShoppingCart } from "lucide-react";
+import { TestimonialsSection } from "@/components/testimonials/TestimonialsSection";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -78,6 +79,8 @@ const Index = () => {
           </Card>
         </div>
       </div>
+      
+      <TestimonialsSection />
     </div>
   );
 };
