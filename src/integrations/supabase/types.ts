@@ -35,6 +35,7 @@ export type Database = {
       }
       ship_site_data: {
         Row: {
+          country: string | null
           created_at: string
           estimated_price: number | null
           from_location: string | null
@@ -42,12 +43,15 @@ export type Database = {
           name: string
           package_type: string | null
           phone: string
+          preferred_contact_method: string | null
           question: string | null
+          subject: string | null
           to_location: string | null
           type: string
           weight: number | null
         }
         Insert: {
+          country?: string | null
           created_at?: string
           estimated_price?: number | null
           from_location?: string | null
@@ -55,12 +59,15 @@ export type Database = {
           name: string
           package_type?: string | null
           phone: string
+          preferred_contact_method?: string | null
           question?: string | null
+          subject?: string | null
           to_location?: string | null
           type: string
           weight?: number | null
         }
         Update: {
+          country?: string | null
           created_at?: string
           estimated_price?: number | null
           from_location?: string | null
@@ -68,7 +75,9 @@ export type Database = {
           name?: string
           package_type?: string | null
           phone?: string
+          preferred_contact_method?: string | null
           question?: string | null
+          subject?: string | null
           to_location?: string | null
           type?: string
           weight?: number | null

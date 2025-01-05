@@ -25,6 +25,7 @@ export const submitShippingRequest = async (values: ShippingFormData) => {
       weight: values.weight,
       package_type: values.packageType,
       estimated_price: estimatedPrice,
+      country: values.country,
       type: 'shipping'
     })
     .select()
