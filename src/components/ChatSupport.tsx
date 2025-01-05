@@ -6,7 +6,6 @@ import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ChatMessages } from "./chat/ChatMessages";
 import { ChatInput } from "./chat/ChatInput";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface Message {
   content: string;
@@ -50,22 +49,13 @@ export const ChatSupport = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                className="fixed bottom-4 right-4 h-12 w-12 rounded-full shadow-lg z-50"
-              >
-                <MessageCircle className="h-6 w-6" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent side="left" className="max-w-[200px]">
-              <p>Need help? Chat with our support assistant!</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <Button
+          variant="outline"
+          size="icon"
+          className="fixed bottom-4 right-4 h-12 w-12 rounded-full shadow-lg z-50"
+        >
+          <MessageCircle className="h-6 w-6" />
+        </Button>
       </SheetTrigger>
       <SheetContent className="w-full sm:max-w-[300px] p-0">
         <div className="flex flex-col h-[100dvh] sm:h-full">
