@@ -18,8 +18,7 @@ const Layout = ({ children }: LayoutProps) => {
         <MainNavigation />
         <div className="flex-1">
           <div className="container mx-auto p-6">
-            <div className="flex items-center gap-4 mb-4">
-              <SidebarTrigger />
+            <div className="flex items-center justify-end gap-4 mb-4">
               <Button
                 variant="ghost"
                 size="icon"
@@ -27,6 +26,7 @@ const Layout = ({ children }: LayoutProps) => {
               >
                 <Home className="h-5 w-5" />
               </Button>
+              <SidebarTrigger />
             </div>
             {children}
           </div>
