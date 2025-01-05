@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-import { Package, Plane, ShoppingCart, Phone, Mail } from "lucide-react";
+import { Package, Plane, ShoppingCart } from "lucide-react";
 import { TestimonialsSection } from "@/components/testimonials/TestimonialsSection";
 
 const Index = () => {
@@ -10,18 +10,6 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 md:py-12">
-        {/* Contact Information */}
-        <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-8 text-primary">
-          <div className="flex items-center gap-2">
-            <Phone className="h-5 w-5" />
-            <a href="tel:+13473893821" className="hover:underline">+1 (347) 389-3821</a>
-          </div>
-          <div className="flex items-center gap-2">
-            <Mail className="h-5 w-5" />
-            <a href="mailto:momultiservicesllc@gmail.com" className="hover:underline">momultiservicesllc@gmail.com</a>
-          </div>
-        </div>
-
         <h1 className="text-2xl md:text-4xl font-bold text-center mb-2 md:mb-4">Welcome to Our Shipping Solutions</h1>
         <p className="text-sm md:text-lg text-muted-foreground text-center mb-6 md:mb-12 max-w-2xl mx-auto">Your trusted partner for all logistics needs</p>
         
