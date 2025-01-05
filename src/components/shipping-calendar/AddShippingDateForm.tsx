@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useToast } from "@/components/ui/use-toast";
 import { ShippingDateFormFields } from "./ShippingDateFormFields";
-import { addShippingDate } from "./shippingCalendarService";
+import { addShippingDate, AddShippingDateParams } from "./shippingCalendarService";
 
 const formSchema = z.object({
   shipping_date: z.string().min(1, "Date is required"),
@@ -29,7 +29,14 @@ export const AddShippingDateForm = ({ onSuccess }: { onSuccess: () => void }) =>
 
   const onSubmit = async (values: ShippingDateFormData) => {
     try {
-      await addShippingDate(values);
+      // Ensure all required fields are present
+      const shippingData: AddShippingDateParams = {
+        shipping_date: values.shipping_date,
+        from_location: values.from_location,
+        to_location: values.to_location,
+      };
+
+      await addShippingDate(shippingData);
       
       toast({
         title: "Success",
@@ -39,10 +46,11 @@ export const AddShippingDateForm = ({ onSuccess }: { onSuccess: () => void }) =>
       form.reset();
       onSuccess();
     } catch (error) {
+      console.error("Form submission error:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to add shipping date",
+        description: "Failed to add shipping date. Please try again.",
       });
     }
   };

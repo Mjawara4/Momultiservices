@@ -17,7 +17,7 @@ export const ShippingDateFormFields = ({ form }: ShippingDateFormFieldsProps) =>
           <FormItem>
             <FormLabel>Date</FormLabel>
             <FormControl>
-              <Input type="date" {...field} />
+              <Input type="date" {...field} required />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -31,7 +31,7 @@ export const ShippingDateFormFields = ({ form }: ShippingDateFormFieldsProps) =>
           <FormItem>
             <FormLabel>Origin Location</FormLabel>
             <FormControl>
-              <Input {...field} />
+              <Input {...field} required />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -45,7 +45,7 @@ export const ShippingDateFormFields = ({ form }: ShippingDateFormFieldsProps) =>
           <FormItem>
             <FormLabel>Destination Location</FormLabel>
             <FormControl>
-              <Input {...field} />
+              <Input {...field} required />
             </FormControl>
             <FormMessage />
           </FormItem>
