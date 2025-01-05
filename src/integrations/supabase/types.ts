@@ -9,6 +9,30 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      scheduled_shipping_dates: {
+        Row: {
+          created_at: string | null
+          from_location: string
+          id: string
+          shipping_date: string
+          to_location: string
+        }
+        Insert: {
+          created_at?: string | null
+          from_location: string
+          id?: string
+          shipping_date: string
+          to_location: string
+        }
+        Update: {
+          created_at?: string | null
+          from_location?: string
+          id?: string
+          shipping_date?: string
+          to_location?: string
+        }
+        Relationships: []
+      }
       ship_site_data: {
         Row: {
           created_at: string
