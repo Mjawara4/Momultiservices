@@ -16,12 +16,14 @@ serve(async (req) => {
 
   try {
     if (!openAIApiKey) {
+      console.error('OpenAI API key is not configured');
       throw new Error('OpenAI API key is not configured');
     }
 
     const { message } = await req.json();
     
     if (!message) {
+      console.error('No message provided');
       throw new Error('No message provided');
     }
 
