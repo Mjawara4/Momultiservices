@@ -59,7 +59,7 @@ export const ChatSupport = () => {
           <MessageCircle className="h-6 w-6" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-[90vw] sm:w-[400px]">
+      <SheetContent className="w-[80vw] sm:w-[300px]">
         <SheetHeader>
           <SheetTitle>Chat Support</SheetTitle>
         </SheetHeader>
