@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { MessageCircle, Send } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { ChatMessages } from "./chat/ChatMessages";
+import { ChatInput } from "./chat/ChatInput";
 
 interface Message {
   content: string;
@@ -24,7 +25,6 @@ export const ChatSupport = () => {
     const userMessage = input;
     setInput("");
     
-    // Add user message to chat
     setMessages(prev => [...prev, { content: userMessage, isUser: true }]);
 
     try {
@@ -33,8 +33,6 @@ export const ChatSupport = () => {
       });
 
       if (error) throw error;
-
-      // Add AI response to chat
       setMessages(prev => [...prev, { content: data.response, isUser: false }]);
     } catch (error) {
       console.error('Error sending message:', error);
@@ -64,48 +62,14 @@ export const ChatSupport = () => {
           <SheetTitle>Chat Support</SheetTitle>
         </SheetHeader>
         <div className="flex h-[calc(100vh-180px)] flex-col">
-          <div className="flex-1 space-y-4 overflow-y-auto p-4">
-            {messages.length === 0 ? (
-              <p className="text-center text-sm text-muted-foreground">
-                Start a conversation with our AI support assistant
-              </p>
-            ) : (
-              messages.map((msg, i) => (
-                <div
-                  key={i}
-                  className={`flex ${msg.isUser ? "justify-end" : "justify-start"}`}
-                >
-                  <div
-                    className={`max-w-[80%] rounded-lg px-4 py-2 ${
-                      msg.isUser
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted"
-                    }`}
-                  >
-                    <p className="text-sm">{msg.content}</p>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
+          <ChatMessages messages={messages} />
           <div className="border-t p-4">
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                sendMessage();
-              }}
-              className="flex gap-2"
-            >
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Type your message..."
-                disabled={isLoading}
-              />
-              <Button type="submit" size="icon" disabled={isLoading}>
-                <Send className="h-4 w-4" />
-              </Button>
-            </form>
+            <ChatInput
+              input={input}
+              isLoading={isLoading}
+              onInputChange={setInput}
+              onSend={sendMessage}
+            />
           </div>
         </div>
       </SheetContent>
