@@ -28,24 +28,95 @@ interface InquiryData {
 }
 
 const generateShippingEmailHtml = (data: ShippingData) => `
-  <h2>New Shipping Request</h2>
-  <p><strong>Name:</strong> ${data.name}</p>
-  <p><strong>Phone:</strong> ${data.phone}</p>
-  <p><strong>From:</strong> ${data.from_location}</p>
-  <p><strong>To:</strong> ${data.to_location}</p>
-  <p><strong>Weight:</strong> ${data.weight} lbs</p>
-  <p><strong>Package Type:</strong> ${data.package_type}</p>
-  <p><strong>Estimated Price:</strong> $${data.estimated_price}</p>
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #f4f4f4; padding: 20px; text-align: center; }
+        .content { padding: 20px; }
+        .field { margin-bottom: 10px; }
+        .label { font-weight: bold; }
+        .price { color: #2b6cb0; font-size: 1.2em; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h2>New Shipping Request</h2>
+        </div>
+        <div class="content">
+          <div class="field">
+            <span class="label">Name:</span> ${data.name}
+          </div>
+          <div class="field">
+            <span class="label">Phone:</span> ${data.phone}
+          </div>
+          <div class="field">
+            <span class="label">From:</span> ${data.from_location}
+          </div>
+          <div class="field">
+            <span class="label">To:</span> ${data.to_location}
+          </div>
+          <div class="field">
+            <span class="label">Weight:</span> ${data.weight} lbs
+          </div>
+          <div class="field">
+            <span class="label">Package Type:</span> ${data.package_type}
+          </div>
+          <div class="field price">
+            <span class="label">Estimated Price:</span> $${data.estimated_price}
+          </div>
+        </div>
+      </div>
+    </body>
+  </html>
 `;
 
 const generateInquiryEmailHtml = (data: InquiryData) => `
-  <h2>New Inquiry</h2>
-  <p><strong>Name:</strong> ${data.name}</p>
-  <p><strong>Phone:</strong> ${data.phone}</p>
-  <p><strong>Subject:</strong> ${data.subject}</p>
-  <p><strong>Question:</strong> ${data.question}</p>
-  <p><strong>Country:</strong> ${data.country}</p>
-  <p><strong>Preferred Contact Method:</strong> ${data.preferredContactMethod}</p>
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #f4f4f4; padding: 20px; text-align: center; }
+        .content { padding: 20px; }
+        .field { margin-bottom: 10px; }
+        .label { font-weight: bold; }
+        .question { background: #f9f9f9; padding: 15px; margin: 10px 0; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h2>New Customer Inquiry</h2>
+        </div>
+        <div class="content">
+          <div class="field">
+            <span class="label">Name:</span> ${data.name}
+          </div>
+          <div class="field">
+            <span class="label">Phone:</span> ${data.phone}
+          </div>
+          <div class="field">
+            <span class="label">Subject:</span> ${data.subject}
+          </div>
+          <div class="field">
+            <span class="label">Country:</span> ${data.country}
+          </div>
+          <div class="field">
+            <span class="label">Preferred Contact Method:</span> ${data.preferredContactMethod}
+          </div>
+          <div class="question">
+            <span class="label">Question:</span><br>
+            ${data.question}
+          </div>
+        </div>
+      </div>
+    </body>
+  </html>
 `;
 
 const handler = async (req: Request): Promise<Response> => {
@@ -60,10 +131,10 @@ const handler = async (req: Request): Promise<Response> => {
     let html = '';
 
     if (type === 'shipping') {
-      subject = 'New Shipping Request';
+      subject = '🚚 New Shipping Request';
       html = generateShippingEmailHtml(data as ShippingData);
     } else if (type === 'inquiry') {
-      subject = 'New Inquiry';
+      subject = '❓ New Customer Inquiry';
       html = generateInquiryEmailHtml(data as InquiryData);
     } else {
       throw new Error('Invalid notification type');
@@ -71,30 +142,50 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Sending email notification:', { type, data });
 
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${RESEND_API_KEY}`,
-      },
-      body: JSON.stringify({
-        from: "MO Multi Services <onboarding@resend.dev>",
-        to: ["mjawara4@icloud.com"], // Updated to use your verified email
-        subject: subject,
-        html: html,
-      }),
+    // Send to both emails for redundancy
+    const emails = ["mjawara4@icloud.com", "momultiservicesllc@gmail.com"];
+    const emailPromises = emails.map(async (email) => {
+      try {
+        const res = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${RESEND_API_KEY}`,
+          },
+          body: JSON.stringify({
+            from: "MO Multi Services <onboarding@resend.dev>",
+            to: [email],
+            subject: subject,
+            html: html,
+          }),
+        });
+
+        if (!res.ok) {
+          const errorText = await res.text();
+          console.error(`Error sending email to ${email}:`, errorText);
+          return { email, success: false, error: errorText };
+        }
+
+        const responseData = await res.json();
+        console.log(`Email sent successfully to ${email}:`, responseData);
+        return { email, success: true };
+      } catch (error) {
+        console.error(`Error sending email to ${email}:`, error);
+        return { email, success: false, error };
+      }
     });
 
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error("Error response from Resend:", errorText);
-      throw new Error(`Failed to send email: ${errorText}`);
+    const results = await Promise.all(emailPromises);
+    const successfulSends = results.filter(r => r.success);
+
+    if (successfulSends.length === 0) {
+      throw new Error('Failed to send email to all recipients');
     }
 
-    const responseData = await res.json();
-    console.log("Email sent successfully:", responseData);
-
-    return new Response(JSON.stringify({ success: true }), {
+    return new Response(JSON.stringify({ 
+      success: true,
+      results
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
