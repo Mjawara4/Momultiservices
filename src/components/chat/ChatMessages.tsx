@@ -11,7 +11,7 @@ interface ChatMessagesProps {
 
 export const ChatMessages = ({ messages }: ChatMessagesProps) => {
   return (
-    <div className="flex-1 space-y-4 overflow-y-auto p-4">
+    <div className="flex-1 space-y-4 overflow-y-auto p-4 min-h-0">
       {messages.length === 0 ? (
         <p className="text-center text-sm text-muted-foreground">
           Start a conversation with our AI support assistant

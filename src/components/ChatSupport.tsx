@@ -52,24 +52,26 @@ export const ChatSupport = () => {
         <Button
           variant="outline"
           size="icon"
-          className="fixed bottom-4 right-4 h-12 w-12 rounded-full shadow-lg"
+          className="fixed bottom-4 right-4 h-12 w-12 rounded-full shadow-lg z-50"
         >
           <MessageCircle className="h-6 w-6" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-[80vw] sm:w-[300px]">
-        <SheetHeader>
-          <SheetTitle>Chat Support</SheetTitle>
-        </SheetHeader>
-        <div className="flex h-[calc(100vh-180px)] flex-col">
-          <ChatMessages messages={messages} />
-          <div className="border-t p-4">
-            <ChatInput
-              input={input}
-              isLoading={isLoading}
-              onInputChange={setInput}
-              onSend={sendMessage}
-            />
+      <SheetContent className="w-full sm:max-w-[300px] p-0">
+        <div className="flex flex-col h-[100dvh] sm:h-full">
+          <SheetHeader className="px-4 py-3 border-b">
+            <SheetTitle>Chat Support</SheetTitle>
+          </SheetHeader>
+          <div className="flex-1 flex flex-col">
+            <ChatMessages messages={messages} />
+            <div className="border-t p-3">
+              <ChatInput
+                input={input}
+                isLoading={isLoading}
+                onInputChange={setInput}
+                onSend={sendMessage}
+              />
+            </div>
           </div>
         </div>
       </SheetContent>

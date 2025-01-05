@@ -23,6 +23,7 @@ export const ChatInput = ({ input, isLoading, onInputChange, onSend }: ChatInput
         onChange={(e) => onInputChange(e.target.value)}
         placeholder="Type your message..."
         disabled={isLoading}
+        className="flex-1"
       />
       <Button type="submit" size="icon" disabled={isLoading}>
         <Send className="h-4 w-4" />
