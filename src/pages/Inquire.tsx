@@ -13,6 +13,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Accordion,
   AccordionContent,
   AccordionItem,
@@ -26,6 +33,9 @@ const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   phone: z.string().min(10, "Please enter a valid phone number"),
   question: z.string().min(10, "Question must be at least 10 characters"),
+  country: z.string().min(1, "Please select a country"),
+  preferredContactMethod: z.string().min(1, "Please select a contact method"),
+  subject: z.string().min(2, "Subject must be at least 2 characters"),
 });
 
 const Inquire = () => {
@@ -37,6 +47,9 @@ const Inquire = () => {
       name: "",
       phone: "",
       question: "",
+      country: "",
+      preferredContactMethod: "",
+      subject: "",
     },
   });
 
@@ -48,6 +61,9 @@ const Inquire = () => {
           name: values.name,
           phone: values.phone,
           question: values.question,
+          country: values.country,
+          preferred_contact_method: values.preferredContactMethod,
+          subject: values.subject,
           type: 'inquiry'
         })
         .select()
@@ -137,6 +153,73 @@ const Inquire = () => {
                     <FormLabel>Phone Number</FormLabel>
                     <FormControl>
                       <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="country"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Country</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select your country" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="US">United States</SelectItem>
+                        <SelectItem value="CA">Canada</SelectItem>
+                        <SelectItem value="MX">Mexico</SelectItem>
+                        <SelectItem value="UK">United Kingdom</SelectItem>
+                        <SelectItem value="FR">France</SelectItem>
+                        <SelectItem value="DE">Germany</SelectItem>
+                        <SelectItem value="IT">Italy</SelectItem>
+                        <SelectItem value="ES">Spain</SelectItem>
+                        <SelectItem value="AU">Australia</SelectItem>
+                        <SelectItem value="JP">Japan</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="preferredContactMethod"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Preferred Contact Method</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select contact method" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="phone">Phone</SelectItem>
+                        <SelectItem value="email">Email</SelectItem>
+                        <SelectItem value="text">Text Message</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="subject"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Subject</FormLabel>
+                    <FormControl>
+                      <Input {...field} placeholder="Brief description of your inquiry" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
