@@ -31,7 +31,7 @@ export const LocationFilters = ({
           <SelectValue placeholder="Filter by origin" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="">All Origins</SelectItem>
+          <SelectItem value="all">All Origins</SelectItem>
           {uniqueFromLocations.map((location) => (
             <SelectItem key={location} value={location}>
               {location}
@@ -45,7 +45,7 @@ export const LocationFilters = ({
           <SelectValue placeholder="Filter by destination" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="">All Destinations</SelectItem>
+          <SelectItem value="all">All Destinations</SelectItem>
           {uniqueToLocations.map((location) => (
             <SelectItem key={location} value={location}>
               {location}

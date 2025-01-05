@@ -25,8 +25,8 @@ const ShipCalendar = () => {
   const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(
     new Date()
   );
-  const [filterFromLocation, setFilterFromLocation] = React.useState("");
-  const [filterToLocation, setFilterToLocation] = React.useState("");
+  const [filterFromLocation, setFilterFromLocation] = React.useState("all");
+  const [filterToLocation, setFilterToLocation] = React.useState("all");
 
   const { data: scheduledDates, refetch } = useQuery({
     queryKey: ["scheduled-dates"],
@@ -53,8 +53,8 @@ const ShipCalendar = () => {
   const filteredShipments = React.useMemo(() => {
     if (!scheduledDates) return [];
     return scheduledDates.filter(shipment => {
-      const matchesFrom = !filterFromLocation || shipment.from_location === filterFromLocation;
-      const matchesTo = !filterToLocation || shipment.to_location === filterToLocation;
+      const matchesFrom = filterFromLocation === "all" || shipment.from_location === filterFromLocation;
+      const matchesTo = filterToLocation === "all" || shipment.to_location === filterToLocation;
       return matchesFrom && matchesTo;
     });
   }, [scheduledDates, filterFromLocation, filterToLocation]);
