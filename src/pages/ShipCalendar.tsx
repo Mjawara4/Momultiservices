@@ -11,12 +11,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { AddShippingDateForm } from "@/components/shipping-calendar/AddShippingDateForm";
 
 const ShipCalendar = () => {
-  const { data: scheduledDates, refetch } = useQuery({
+  const { data: scheduledDates } = useQuery({
     queryKey: ["scheduled-dates"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -31,19 +28,8 @@ const ShipCalendar = () => {
 
   return (
     <div className="container mx-auto p-6">
-      <div className="flex justify-between items-center mb-8">
+      <div className="mb-8">
         <h1 className="text-3xl font-bold">Available Shipping Dates</h1>
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button>Add Shipping Date</Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add New Shipping Date</DialogTitle>
-            </DialogHeader>
-            <AddShippingDateForm onSuccess={refetch} />
-          </DialogContent>
-        </Dialog>
       </div>
 
       <Card className="p-6">
