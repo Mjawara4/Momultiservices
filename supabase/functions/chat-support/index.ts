@@ -1,7 +1,10 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const supabaseUrl = Deno.env.get('SUPABASE_URL');
+const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -25,30 +28,52 @@ Package Handling and Restrictions:
 Pricing and Discounts:
 - Special discounts available for shipments over 10 lbs
 - Additional fee for pickup service
-- For specific pricing and refund policies, direct customers to call us
-
-Please provide friendly, helpful responses based on this information. For specific pricing details, refund inquiries, or to make appointments, kindly direct customers to call us. If asked about services we don't offer or routes we don't cover, politely explain our current focus on Gambia-USA shipping routes.`;
+- For specific pricing and refund policies, direct customers to call us`;
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    if (!openAIApiKey) {
-      console.error('OpenAI API key is not configured');
-      throw new Error('OpenAI API key is not configured');
+    if (!openAIApiKey || !supabaseUrl || !supabaseServiceKey) {
+      throw new Error('Required environment variables are not configured');
     }
 
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
     const { message } = await req.json();
     
     if (!message) {
-      console.error('No message provided');
       throw new Error('No message provided');
     }
 
-    console.log('Sending message to OpenAI:', message);
+    // Fetch upcoming shipping dates
+    const { data: shippingDates, error: shippingError } = await supabase
+      .from('scheduled_shipping_dates')
+      .select('*')
+      .gte('shipping_date', new Date().toISOString())
+      .order('shipping_date', { ascending: true })
+      .limit(5);
+
+    if (shippingError) {
+      console.error('Error fetching shipping dates:', shippingError);
+      throw shippingError;
+    }
+
+    // Format shipping dates for the AI context
+    const shippingSchedule = shippingDates
+      .map(date => `- ${date.shipping_date}: ${date.from_location} to ${date.to_location}`)
+      .join('\n');
+
+    const dynamicContext = `
+${businessContext}
+
+Current Shipping Schedule:
+${shippingSchedule}
+
+Please use this shipping schedule information when answering questions about available shipping dates and routes.`;
+
+    console.log('Sending message to OpenAI with context:', dynamicContext);
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -61,7 +86,7 @@ serve(async (req) => {
         messages: [
           { 
             role: 'system', 
-            content: businessContext
+            content: dynamicContext
           },
           { role: 'user', content: message }
         ],
