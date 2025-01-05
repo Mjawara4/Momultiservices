@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { submitShippingRequest } from "./shippingService";
 import { PersonalInfoFields } from "./PersonalInfoFields";
 import { LocationFields } from "./LocationFields";
@@ -40,8 +40,21 @@ export const ShippingForm = () => {
       const result = await submitShippingRequest(values);
       
       toast({
-        title: "Success!",
-        description: `Shipping request submitted successfully. Estimated price: $${result.estimatedPrice}`,
+        title: "Shipping Request Submitted!",
+        description: (
+          <div className="space-y-2">
+            <p>Estimated price: ${result.estimatedPrice}</p>
+            <p>From: {values.fromLocation}</p>
+            <p>To: {values.toLocation}</p>
+            <p>Package Type: {values.packageType}</p>
+            <p>Weight: {values.weight} lbs</p>
+            <div className="mt-4 pt-2 border-t">
+              <p>For any questions, please contact us:</p>
+              <p>Phone: +1 (347) 389-3821</p>
+              <p>Email: momultiservicesllc@gmail.com</p>
+            </div>
+          </div>
+        ),
       });
       
       form.reset();
