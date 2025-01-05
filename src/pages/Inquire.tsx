@@ -28,6 +28,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
+import { ContactInfo } from "@/components/contact/ContactInfo";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -95,7 +96,9 @@ const Inquire = () => {
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="container max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8 text-center">Inquiries & FAQ</h1>
+        <h1 className="text-3xl font-bold mb-8 text-center">Contact Us</h1>
+
+        <ContactInfo />
 
         <Card className="p-6 mb-8">
           <h2 className="text-2xl font-semibold mb-4">Frequently Asked Questions</h2>
@@ -128,7 +131,7 @@ const Inquire = () => {
         </Card>
 
         <Card className="p-6">
-          <h2 className="text-2xl font-semibold mb-6">Ask a Question</h2>
+          <h2 className="text-2xl font-semibold mb-6">Send us a Message</h2>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
