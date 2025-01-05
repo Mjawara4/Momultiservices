@@ -14,6 +14,10 @@ const testimonials = [
     name: "Foday",
     message: "Salam bro,\nJust wanted to say thanks 🙏🏾 she got her stuff today💪🏾\nYour GP is unmatched 🙌🏾",
   },
+  {
+    name: "Mabula",
+    message: "I got my package 📦 thanks so much",
+  },
   // More testimonials can be added here later
 ];
 
