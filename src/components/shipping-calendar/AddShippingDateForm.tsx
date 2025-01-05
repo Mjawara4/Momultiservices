@@ -44,7 +44,10 @@ export const AddShippingDateForm = ({ onSuccess }: { onSuccess: () => void }) =>
           to_location: values.to_location,
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error adding shipping date:", error);
+        throw error;
+      }
 
       toast({
         title: "Success",

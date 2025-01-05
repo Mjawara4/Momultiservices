@@ -25,9 +25,6 @@ export const ShipmentDetails = ({ shipments, date }: ShipmentDetailsProps) => {
                     To: {shipment.to_location}
                   </p>
                 </div>
-                <Badge variant="secondary">
-                  {format(new Date(shipment.shipping_date), "HH:mm")}
-                </Badge>
               </div>
             </div>
           ))
