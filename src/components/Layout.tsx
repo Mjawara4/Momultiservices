@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { ChatSupport } from "./ChatSupport";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -22,6 +23,7 @@ const Layout = ({ children }: LayoutProps) => {
         </Button>
         {children}
       </div>
+      <ChatSupport />
     </div>
   );
 };
