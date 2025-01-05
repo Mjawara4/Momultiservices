@@ -79,7 +79,7 @@ const handler = async (req: Request): Promise<Response> => {
       },
       body: JSON.stringify({
         from: "MO Multi Services <onboarding@resend.dev>",
-        to: ["momultiservicesllc@gmail.com"],
+        to: ["mjawara4@icloud.com"], // Updated to use your verified email
         subject: subject,
         html: html,
       }),
