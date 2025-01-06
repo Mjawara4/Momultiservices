@@ -1,33 +1,30 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Layout from "./components/Layout";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Layout } from "./components/Layout";
 import Index from "./pages/Index";
 import Ship from "./pages/Ship";
 import ShipForm from "./pages/ShipForm";
-import ShipCalendar from "./pages/ShipCalendar";
+import Calendar from "./pages/Calendar";
 import Inquire from "./pages/Inquire";
+import OrderForMe from "./pages/OrderForMe";
+import { Toaster } from "./components/ui/toaster";
+import "./App.css";
 
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+function App() {
+  return (
+    <Router>
+      <Layout>
         <Routes>
-          <Route path="/" element={<Layout><Index /></Layout>} />
-          <Route path="/ship" element={<Layout><Ship /></Layout>} />
-          <Route path="/ship/form" element={<Layout><ShipForm /></Layout>} />
-          <Route path="/ship/calendar" element={<Layout><ShipCalendar /></Layout>} />
-          <Route path="/inquire" element={<Layout><Inquire /></Layout>} />
+          <Route path="/" element={<Index />} />
+          <Route path="/ship" element={<Ship />} />
+          <Route path="/ship-form" element={<ShipForm />} />
+          <Route path="/calendar" element={<Calendar />} />
+          <Route path="/order-for-me" element={<OrderForMe />} />
+          <Route path="/inquire" element={<Inquire />} />
         </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+      </Layout>
+      <Toaster />
+    </Router>
+  );
+}
 
 export default App;
