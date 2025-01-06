@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { Form, FormLabel } from "@/components/ui/form";
+import { Form, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
@@ -24,7 +24,6 @@ const optimizeImage = async (file: File): Promise<Blob> => {
       let width = img.width;
       let height = img.height;
 
-      // Calculate new dimensions while maintaining aspect ratio
       if (width > MAX_WIDTH) {
         height = Math.round((height * MAX_WIDTH) / width);
         width = MAX_WIDTH;
@@ -80,26 +79,33 @@ export const OnlineOrderForm = () => {
   const onSubmit = async (values: OrderFormValues) => {
     try {
       setIsUploading(true);
+      console.log('Starting order submission process...');
       
       // Optimize and upload screenshot
       const file = values.screenshot[0];
+      console.log('Optimizing image...');
       const optimizedBlob = await optimizeImage(file);
       const optimizedFile = new File([optimizedBlob], file.name, { type: 'image/jpeg' });
       
-      const fileExt = 'jpg'; // We're converting all images to JPEG
+      const fileExt = 'jpg';
       const fileName = `${crypto.randomUUID()}.${fileExt}`;
       
+      console.log('Uploading image to storage...');
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('product_screenshots')
         .upload(fileName, optimizedFile);
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error('Storage upload error:', uploadError);
+        throw uploadError;
+      }
 
       // Get public URL
       const { data: { publicUrl } } = supabase.storage
         .from('product_screenshots')
         .getPublicUrl(fileName);
 
+      console.log('Saving order to database...');
       // Submit order with screenshot URL
       const { error } = await supabase
         .from('online_orders')
@@ -113,8 +119,12 @@ export const OnlineOrderForm = () => {
           screenshot_url: publicUrl,
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Database insert error:', error);
+        throw error;
+      }
 
+      console.log('Sending email notification...');
       // Send email notification
       const { error: emailError } = await supabase.functions.invoke('send-notifications', {
         body: {
@@ -129,7 +139,6 @@ export const OnlineOrderForm = () => {
 
       if (emailError) {
         console.error('Email notification error:', emailError);
-        // Don't throw here, as the order was successful
         toast({
           variant: "destructive",
           title: "Warning",
@@ -137,6 +146,7 @@ export const OnlineOrderForm = () => {
         });
       }
 
+      console.log('Order submission completed successfully');
       toast({
         title: "Order Request Submitted!",
         description: (
@@ -156,11 +166,11 @@ export const OnlineOrderForm = () => {
       
       form.reset();
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error during order submission:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "There was a problem submitting your order request.",
+        description: "There was a problem submitting your order request. Please try again.",
       });
     } finally {
       setIsUploading(false);
