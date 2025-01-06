@@ -1,10 +1,10 @@
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { useMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const MainNavigation = () => {
-  const isMobile = useMobile();
+  const isMobile = useIsMobile();
 
   const links = [
     { to: "/", label: "Home" },

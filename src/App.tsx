@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Layout } from "./components/Layout";
+import Layout from "./components/Layout";
 import Index from "./pages/Index";
 import Ship from "./pages/Ship";
 import ShipForm from "./pages/ShipForm";
