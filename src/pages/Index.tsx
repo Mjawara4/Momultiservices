@@ -38,26 +38,6 @@ const Index = () => {
             </div>
           </Card>
 
-          {/* Air Cargo Service */}
-          <Card 
-            className="relative group overflow-hidden min-h-[250px] md:min-h-[350px] bg-cover bg-center"
-            style={{
-              backgroundImage: 'url("https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2000")',
-            }}
-          >
-            <div className="absolute inset-0 bg-black/50" />
-            <div className="p-4 md:p-6 flex flex-col items-center relative z-10 h-full justify-center">
-              <div className="bg-secondary/50 p-2 md:p-4 rounded-full mb-3 backdrop-blur-sm">
-                <Plane className="h-5 w-5 md:h-8 md:w-8 text-white" />
-              </div>
-              <h2 className="text-lg md:text-2xl font-semibold mb-2 text-white">Air Cargo</h2>
-              <p className="text-white/90 text-center text-xs md:text-base mb-4 max-w-xs">International air freight solutions for your business</p>
-              <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
-                <span className="text-lg md:text-2xl font-semibold text-white">Coming Soon</span>
-              </div>
-            </div>
-          </Card>
-
           {/* Online Shopping Service */}
           <Card 
             className="group cursor-pointer hover:shadow-lg transition-all overflow-hidden relative min-h-[250px] md:min-h-[350px] bg-cover bg-center"
@@ -79,6 +59,26 @@ const Index = () => {
               >
                 Order for Me
               </Button>
+            </div>
+          </Card>
+
+          {/* Air Cargo Service */}
+          <Card 
+            className="relative group overflow-hidden min-h-[250px] md:min-h-[350px] bg-cover bg-center"
+            style={{
+              backgroundImage: 'url("https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2000")',
+            }}
+          >
+            <div className="absolute inset-0 bg-black/50" />
+            <div className="p-4 md:p-6 flex flex-col items-center relative z-10 h-full justify-center">
+              <div className="bg-secondary/50 p-2 md:p-4 rounded-full mb-3 backdrop-blur-sm">
+                <Plane className="h-5 w-5 md:h-8 md:w-8 text-white" />
+              </div>
+              <h2 className="text-lg md:text-2xl font-semibold mb-2 text-white">Air Cargo</h2>
+              <p className="text-white/90 text-center text-xs md:text-base mb-4 max-w-xs">International air freight solutions for your business</p>
+              <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
+                <span className="text-lg md:text-2xl font-semibold text-white">Coming Soon</span>
+              </div>
             </div>
           </Card>
         </div>
