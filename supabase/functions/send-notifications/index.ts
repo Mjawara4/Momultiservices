@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { generateShippingEmailHtml, generateInquiryEmailHtml } from "../utils/emailTemplates.ts";
+import { generateShippingEmailHtml, generateInquiryEmailHtml, generateOrderEmailHtml } from "../utils/emailTemplates.ts";
 import { sendEmail } from "../utils/emailSender.ts";
 
 const corsHeaders = {
@@ -26,6 +26,9 @@ const handler = async (req: Request): Promise<Response> => {
     } else if (type === 'inquiry') {
       subject = '❓ New Customer Inquiry';
       html = generateInquiryEmailHtml(data);
+    } else if (type === 'order') {
+      subject = '🛍️ New Online Order Request';
+      html = generateOrderEmailHtml(data);
     } else {
       throw new Error('Invalid notification type');
     }
