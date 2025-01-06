@@ -15,6 +15,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   websiteLink: z.string().url("Please enter a valid URL"),
@@ -25,10 +27,21 @@ const formSchema = z.object({
     .max(1000000, "Order amount cannot exceed $1,000,000"),
   name: z.string().min(2, "Name must be at least 2 characters"),
   phone: z.string().min(10, "Please enter a valid phone number"),
+  screenshot: z
+    .instanceof(FileList)
+    .refine((files) => files.length > 0, "Screenshot is required")
+    .refine(
+      (files) =>
+        files[0]?.type === "image/jpeg" ||
+        files[0]?.type === "image/png" ||
+        files[0]?.type === "image/webp",
+      "Only .jpg, .png, and .webp formats are supported"
+    ),
 });
 
 export const OnlineOrderForm = () => {
   const { toast } = useToast();
+  const [isUploading, setIsUploading] = useState(false);
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -46,6 +59,25 @@ export const OnlineOrderForm = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      setIsUploading(true);
+      
+      // Upload screenshot
+      const file = values.screenshot[0];
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${crypto.randomUUID()}.${fileExt}`;
+      
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('product_screenshots')
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('product_screenshots')
+        .getPublicUrl(fileName);
+
+      // Submit order with screenshot URL
       const { error } = await supabase
         .from('online_orders')
         .insert({
@@ -55,6 +87,7 @@ export const OnlineOrderForm = () => {
           service_fee: serviceFee,
           name: values.name,
           phone: values.phone,
+          screenshot_url: publicUrl,
         });
 
       if (error) throw error;
@@ -84,6 +117,8 @@ export const OnlineOrderForm = () => {
         title: "Error",
         description: "There was a problem submitting your order request.",
       });
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -101,6 +136,25 @@ export const OnlineOrderForm = () => {
                   <Input 
                     {...field} 
                     placeholder="https://example.com/product"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="screenshot"
+            render={({ field: { onChange, value, ...field } }) => (
+              <FormItem>
+                <FormLabel>Upload a screenshot of the product:</FormLabel>
+                <FormControl>
+                  <Input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    onChange={(e) => onChange(e.target.files)}
+                    {...field}
                   />
                 </FormControl>
                 <FormMessage />
@@ -180,8 +234,19 @@ export const OnlineOrderForm = () => {
             </div>
           </div>
 
-          <Button type="submit" className="w-full">
-            Submit Order Request
+          <Button 
+            type="submit" 
+            className="w-full"
+            disabled={isUploading}
+          >
+            {isUploading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Uploading...
+              </>
+            ) : (
+              'Submit Order Request'
+            )}
           </Button>
         </form>
       </Form>

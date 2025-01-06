@@ -17,6 +17,7 @@ export type Database = {
           name: string
           order_amount: number
           phone: string
+          screenshot_url: string | null
           service_fee: number
           status: string
           type: string
@@ -29,6 +30,7 @@ export type Database = {
           name: string
           order_amount: number
           phone: string
+          screenshot_url?: string | null
           service_fee: number
           status?: string
           type?: string
@@ -41,6 +43,7 @@ export type Database = {
           name?: string
           order_amount?: number
           phone?: string
+          screenshot_url?: string | null
           service_fee?: number
           status?: string
           type?: string
