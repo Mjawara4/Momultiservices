@@ -60,21 +60,25 @@ const Index = () => {
 
           {/* Online Shopping Service */}
           <Card 
-            className="relative group overflow-hidden min-h-[250px] md:min-h-[350px] bg-cover bg-center"
+            className="group cursor-pointer hover:shadow-lg transition-all overflow-hidden relative min-h-[250px] md:min-h-[350px] bg-cover bg-center"
+            onClick={() => navigate("/order-for-me")}
             style={{
               backgroundImage: 'url("https://images.unsplash.com/photo-1607082349566-187342175e2f?q=80&w=2000")',
             }}
           >
-            <div className="absolute inset-0 bg-black/50" />
+            <div className="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors" />
             <div className="p-4 md:p-6 flex flex-col items-center relative z-10 h-full justify-center">
-              <div className="bg-secondary/50 p-2 md:p-4 rounded-full mb-3 backdrop-blur-sm">
+              <div className="bg-primary/10 p-2 md:p-4 rounded-full mb-3 backdrop-blur-sm">
                 <ShoppingCart className="h-5 w-5 md:h-8 md:w-8 text-white" />
               </div>
               <h2 className="text-lg md:text-2xl font-semibold mb-2 text-white">Online Shopping</h2>
               <p className="text-white/90 text-center text-xs md:text-base mb-4 max-w-xs">Shop your favorite products with ease</p>
-              <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
-                <span className="text-lg md:text-2xl font-semibold text-white">Coming Soon</span>
-              </div>
+              <Button 
+                variant="secondary" 
+                className="w-full max-w-[200px] text-sm md:text-base py-2"
+              >
+                Order Now
+              </Button>
             </div>
           </Card>
         </div>
