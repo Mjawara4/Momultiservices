@@ -1,4 +1,4 @@
-import { Home, Phone, Info, Package, Menu } from "lucide-react";
+import { Home, Phone, Info, Package, Menu, ShoppingCart } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -20,6 +20,11 @@ const navigationItems = [
     title: "Services",
     url: "/ship",
     icon: Package,
+  },
+  {
+    title: "Order for Me",
+    url: "/order-for-me",
+    icon: ShoppingCart,
   },
   {
     title: "Contact",
