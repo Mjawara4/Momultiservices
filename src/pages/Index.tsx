@@ -72,7 +72,7 @@ const Index = () => {
                 <ShoppingCart className="h-5 w-5 md:h-8 md:w-8 text-white" />
               </div>
               <h2 className="text-lg md:text-2xl font-semibold mb-2 text-white">Online Shopping</h2>
-              <p className="text-white/90 text-center text-xs md:text-base mb-4 max-w-xs">Shop your favorite products with ease</p>
+              <p className="text-white/90 text-center text-xs md:text-base mb-4 max-w-xs">We help you order items from US websites and handle shipping to your location</p>
               <Button 
                 variant="secondary" 
                 className="w-full max-w-[200px] text-sm md:text-base py-2"
