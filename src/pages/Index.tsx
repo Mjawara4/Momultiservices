@@ -77,7 +77,7 @@ const Index = () => {
                 variant="secondary" 
                 className="w-full max-w-[200px] text-sm md:text-base py-2"
               >
-                Order Now
+                Order for Me
               </Button>
             </div>
           </Card>
