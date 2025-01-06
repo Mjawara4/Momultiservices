@@ -1,45 +1,60 @@
-import { NavLink } from "react-router-dom";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { Home, Phone, Info, Package, Menu } from "lucide-react";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
 
-export const MainNavigation = () => {
-  const isMobile = useIsMobile();
+const navigationItems = [
+  {
+    title: "Home",
+    url: "/",
+    icon: Home,
+  },
+  {
+    title: "Services",
+    url: "/ship",
+    icon: Package,
+  },
+  {
+    title: "Contact",
+    url: "/inquire",
+    icon: Phone,
+  },
+  {
+    title: "About Us",
+    url: "#",
+    icon: Info,
+  },
+];
 
-  const links = [
-    { to: "/", label: "Home" },
-    { to: "/ship", label: "Ship" },
-    { to: "/calendar", label: "Calendar" },
-    { to: "/order-for-me", label: "Order for Me" },
-    { to: "/inquire", label: "Contact" },
-  ];
-
+export function MainNavigation() {
   return (
-    <nav className={cn(
-      "flex gap-2",
-      isMobile ? "flex-col items-stretch" : "items-center"
-    )}>
-      {links.map(({ to, label }) => (
-        <NavLink
-          key={to}
-          to={to}
-          className={({ isActive }) =>
-            cn(
-              "transition-colors",
-              isActive
-                ? "text-primary hover:text-primary/90"
-                : "text-muted-foreground hover:text-primary"
-            )
-          }
-        >
-          <Button
-            variant="ghost"
-            className={cn("w-full", isMobile && "justify-start")}
-          >
-            {label}
-          </Button>
-        </NavLink>
-      ))}
-    </nav>
+    <Sidebar>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navigationItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild tooltip={item.title}>
+                    <a href={item.url}>
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+    </Sidebar>
   );
-};
+}
