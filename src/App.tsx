@@ -10,6 +10,7 @@ import ShipForm from "./pages/ShipForm";
 import ShipCalendar from "./pages/ShipCalendar";
 import Inquire from "./pages/Inquire";
 import OrderForMe from "./pages/OrderForMe";
+import About from "./pages/About";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/ship/calendar" element={<Layout><ShipCalendar /></Layout>} />
           <Route path="/inquire" element={<Layout><Inquire /></Layout>} />
           <Route path="/order-for-me" element={<Layout><OrderForMe /></Layout>} />
+          <Route path="/about" element={<Layout><About /></Layout>} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

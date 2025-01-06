@@ -33,7 +33,7 @@ const navigationItems = [
   },
   {
     title: "About Us",
-    url: "#",
+    url: "/about",
     icon: Info,
   },
 ];
