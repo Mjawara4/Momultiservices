@@ -12,6 +12,53 @@ import { ProductDetailsFields } from "./ProductDetailsFields";
 import { OrderDetailsFields } from "./OrderDetailsFields";
 import { PersonalInfoFields } from "./PersonalInfoFields";
 
+const MAX_IMAGE_SIZE = 1024 * 1024; // 1MB
+const MAX_WIDTH = 1200;
+const QUALITY = 0.8;
+
+const optimizeImage = async (file: File): Promise<Blob> => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      let width = img.width;
+      let height = img.height;
+
+      // Calculate new dimensions while maintaining aspect ratio
+      if (width > MAX_WIDTH) {
+        height = Math.round((height * MAX_WIDTH) / width);
+        width = MAX_WIDTH;
+      }
+
+      canvas.width = width;
+      canvas.height = height;
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        reject(new Error('Failed to get canvas context'));
+        return;
+      }
+
+      ctx.drawImage(img, 0, 0, width, height);
+      
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            resolve(blob);
+          } else {
+            reject(new Error('Failed to convert canvas to blob'));
+          }
+        },
+        'image/jpeg',
+        QUALITY
+      );
+    };
+
+    img.onerror = () => reject(new Error('Failed to load image'));
+    img.src = URL.createObjectURL(file);
+  });
+};
+
 export const OnlineOrderForm = () => {
   const { toast } = useToast();
   const [isUploading, setIsUploading] = useState(false);
@@ -34,14 +81,17 @@ export const OnlineOrderForm = () => {
     try {
       setIsUploading(true);
       
-      // Upload screenshot
+      // Optimize and upload screenshot
       const file = values.screenshot[0];
-      const fileExt = file.name.split('.').pop();
+      const optimizedBlob = await optimizeImage(file);
+      const optimizedFile = new File([optimizedBlob], file.name, { type: 'image/jpeg' });
+      
+      const fileExt = 'jpg'; // We're converting all images to JPEG
       const fileName = `${crypto.randomUUID()}.${fileExt}`;
       
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('product_screenshots')
-        .upload(fileName, file);
+        .upload(fileName, optimizedFile);
 
       if (uploadError) throw uploadError;
 
@@ -64,6 +114,28 @@ export const OnlineOrderForm = () => {
         });
 
       if (error) throw error;
+
+      // Send email notification
+      const { error: emailError } = await supabase.functions.invoke('send-notifications', {
+        body: {
+          type: 'order',
+          data: {
+            ...values,
+            serviceFee,
+            screenshotUrl: publicUrl
+          }
+        }
+      });
+
+      if (emailError) {
+        console.error('Email notification error:', emailError);
+        // Don't throw here, as the order was successful
+        toast({
+          variant: "destructive",
+          title: "Warning",
+          description: "Order submitted successfully, but there was an issue sending the email notification.",
+        });
+      }
 
       toast({
         title: "Order Request Submitted!",
