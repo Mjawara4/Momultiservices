@@ -1,7 +1,10 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0';
 
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const supabaseUrl = Deno.env.get('SUPABASE_URL');
+const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -41,25 +44,31 @@ serve(async (req) => {
       throw new Error('OpenAI API key not configured');
     }
 
+    if (!supabaseUrl || !supabaseServiceKey) {
+      throw new Error('Supabase configuration missing');
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
     const { message } = await req.json();
     
     if (!message) {
       throw new Error('No message provided');
     }
 
-    // Fetch upcoming shipping dates
+    console.log('Fetching shipping dates...');
     const { data: shippingDates, error: shippingError } = await supabase
       .from('scheduled_shipping_dates')
       .select('*')
       .gte('shipping_date', new Date().toISOString())
       .order('shipping_date', { ascending: true })
-      .limit(3); // Reduced from 5 to 3 for more concise responses
+      .limit(3);
 
     if (shippingError) {
       console.error('Error fetching shipping dates:', shippingError);
       throw shippingError;
     }
 
+    console.log('Shipping dates fetched:', shippingDates);
     const shippingSchedule = shippingDates
       .map(date => `${new Date(date.shipping_date).toLocaleDateString()}: ${date.from_location} to ${date.to_location}`)
       .join('\n');
@@ -72,6 +81,7 @@ ${shippingSchedule}
 
 Remember: Keep responses brief and focused on the customer's question.`;
 
+    console.log('Calling OpenAI API...');
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -87,7 +97,7 @@ Remember: Keep responses brief and focused on the customer's question.`;
           },
           { role: 'user', content: message }
         ],
-        max_tokens: 150, // Reduced from 500 to encourage shorter responses
+        max_tokens: 150,
         temperature: 0.7,
       }),
     });
@@ -99,6 +109,7 @@ Remember: Keep responses brief and focused on the customer's question.`;
     }
 
     const data = await response.json();
+    console.log('OpenAI response received');
     const aiResponse = data.choices[0].message.content;
 
     return new Response(JSON.stringify({ response: aiResponse }), {
