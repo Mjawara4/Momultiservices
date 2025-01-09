@@ -4,7 +4,8 @@ import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { ShipmentDetails } from "@/components/shipping-calendar/ShipmentDetails";
-import { useState, useEffect } from "react";
+import { LocationFilters } from "@/components/shipping-calendar/LocationFilters";
+import { useState, useEffect, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import type { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
@@ -14,9 +15,11 @@ type ShippingDate = Database['public']['Tables']['scheduled_shipping_dates']['Ro
 
 const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [filterFromLocation, setFilterFromLocation] = useState("all");
+  const [filterToLocation, setFilterToLocation] = useState("all");
   const queryClient = useQueryClient();
 
-  const { data: shipments, isLoading } = useQuery({
+  const { data: shipments = [], isLoading } = useQuery({
     queryKey: ["scheduled-shipping-dates"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -29,6 +32,25 @@ const CalendarPage = () => {
       return data;
     },
   });
+
+  // Get unique locations for filters
+  const { uniqueFromLocations, uniqueToLocations } = useMemo(() => {
+    const fromLocations = [...new Set(shipments.map(s => s.from_location))];
+    const toLocations = [...new Set(shipments.map(s => s.to_location))];
+    return {
+      uniqueFromLocations: fromLocations,
+      uniqueToLocations: toLocations
+    };
+  }, [shipments]);
+
+  // Filter shipments based on selected locations
+  const filteredShipments = useMemo(() => {
+    return shipments.filter(shipment => {
+      const matchesFromLocation = filterFromLocation === "all" || shipment.from_location === filterFromLocation;
+      const matchesToLocation = filterToLocation === "all" || shipment.to_location === filterToLocation;
+      return matchesFromLocation && matchesToLocation;
+    });
+  }, [shipments, filterFromLocation, filterToLocation]);
 
   // Subscribe to real-time changes
   useEffect(() => {
@@ -75,6 +97,16 @@ const CalendarPage = () => {
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">Shipping Calendar</h1>
+      
+      <LocationFilters 
+        uniqueFromLocations={uniqueFromLocations}
+        uniqueToLocations={uniqueToLocations}
+        filterFromLocation={filterFromLocation}
+        filterToLocation={filterToLocation}
+        setFilterFromLocation={setFilterFromLocation}
+        setFilterToLocation={setFilterToLocation}
+      />
+
       <div className="grid md:grid-cols-2 gap-6">
         <Card className="p-6">
           <Calendar
@@ -86,7 +118,7 @@ const CalendarPage = () => {
         </Card>
         <Card className="p-6">
           <ShipmentDetails 
-            shipments={shipments || []} 
+            shipments={filteredShipments} 
             date={selectedDate || new Date()} 
           />
         </Card>

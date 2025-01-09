@@ -10,14 +10,16 @@ interface ShipmentDetailsProps {
 export const ShipmentDetails = ({ shipments }: ShipmentDetailsProps) => {
   return (
     <div className="space-y-2">
-      <h3 className="font-semibold">All Scheduled Shipments</h3>
+      <h3 className="font-semibold">Scheduled Shipments</h3>
       <div className="space-y-1">
         {shipments.length > 0 ? (
           shipments.map((shipment) => (
             <div key={shipment.id} className="p-2 bg-secondary rounded-md">
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="font-medium">Date: {format(new Date(shipment.shipping_date), "MMMM d, yyyy")}</p>
+                  <p className="font-medium">
+                    {format(new Date(shipment.shipping_date), "MMMM d, yyyy")}
+                  </p>
                   <p>From: {shipment.from_location}</p>
                   <p className="text-sm text-muted-foreground">
                     To: {shipment.to_location}
@@ -27,9 +29,7 @@ export const ShipmentDetails = ({ shipments }: ShipmentDetailsProps) => {
             </div>
           ))
         ) : (
-          <p className="text-muted-foreground">
-            No shipments scheduled
-          </p>
+          <p className="text-muted-foreground">No shipments found</p>
         )}
       </div>
     </div>
