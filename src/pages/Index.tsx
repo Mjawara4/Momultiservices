@@ -115,6 +115,24 @@ const Index = () => {
               >
                 <Twitter className="h-6 w-6" />
               </a>
+              <a 
+                href="https://tiktok.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                <svg 
+                  viewBox="0 0 24 24" 
+                  className="h-6 w-6"
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                >
+                  <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+                </svg>
+              </a>
             </div>
             <p className="text-sm text-muted-foreground">
               © {new Date().getFullYear()} MO Multiservices LLC. All rights reserved.
