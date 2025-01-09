@@ -1,10 +1,10 @@
-import { Phone, Info, Package, Menu, ShoppingCart } from "lucide-react";
+import { Home, Phone, Info, Package, Menu, ShoppingCart } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
-  SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarGroupContent,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -12,6 +12,11 @@ import {
 import { useNavigate } from "react-router-dom";
 
 const navigationItems = [
+  {
+    title: "Home",
+    url: "/",
+    icon: Home,
+  },
   {
     title: "Services",
     url: "/ship",
