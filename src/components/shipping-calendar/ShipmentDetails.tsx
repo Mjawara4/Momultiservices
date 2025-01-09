@@ -8,14 +8,21 @@ interface ShipmentDetailsProps {
 }
 
 export const ShipmentDetails = ({ shipments, date }: ShipmentDetailsProps) => {
-  // Filter shipments for the selected date and ensure it's not in the past
+  console.log("All shipments:", shipments); // Debug log
+  console.log("Selected date:", date); // Debug log
+
+  // Filter shipments for the selected date
   const filteredShipments = shipments.filter((shipment) => {
-    const shipmentDate = startOfDay(parseISO(shipment.shipping_date));
+    const shipmentDate = parseISO(shipment.shipping_date);
     const selectedDate = startOfDay(date);
-    const isSameDate = format(shipmentDate, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
-    const isValidDate = isToday(shipmentDate) || isFuture(shipmentDate);
-    return isSameDate && isValidDate;
+    console.log("Comparing dates:", {
+      shipmentDate: format(shipmentDate, 'yyyy-MM-dd'),
+      selectedDate: format(selectedDate, 'yyyy-MM-dd')
+    }); // Debug log
+    return format(shipmentDate, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
   });
+
+  console.log("Filtered shipments:", filteredShipments); // Debug log
 
   return (
     <div className="space-y-2">
