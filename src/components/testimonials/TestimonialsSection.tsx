@@ -22,6 +22,10 @@ const testimonials = [
     name: "Aminata",
     message: "Thank you so much 😊, Package received.",
   },
+  {
+    name: "Alima",
+    message: "Thank you so much for the timely you responses",
+  },
 ];
 
 export function TestimonialsSection() {
