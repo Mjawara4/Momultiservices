@@ -12,7 +12,10 @@ import type { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import type { Database } from "@/integrations/supabase/types";
 
 type ShippingDate = Database['public']['Tables']['scheduled_shipping_dates']['Row'];
-type ShippingPayload = RealtimePostgresChangesPayload<ShippingDate>;
+type ShippingPayload = RealtimePostgresChangesPayload<{
+  [key: string]: any;
+  shipping_date: string;
+}>;
 
 const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
