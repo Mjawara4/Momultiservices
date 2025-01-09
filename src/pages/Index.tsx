@@ -9,14 +9,14 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <div className="container mx-auto px-4 py-8 md:py-12 flex-grow">
+      <div className="container mx-auto px-4 py-6 md:py-12 flex-grow">
         <h1 className="text-2xl md:text-4xl font-bold text-center mb-2 md:mb-4">Welcome to Our Shipping Solutions</h1>
-        <p className="text-sm md:text-lg text-muted-foreground text-center mb-6 md:mb-12 max-w-2xl mx-auto">Your trusted partner for all logistics needs</p>
+        <p className="text-sm md:text-lg text-muted-foreground text-center mb-4 md:mb-8 lg:mb-12 max-w-2xl mx-auto px-4">Your trusted partner for all logistics needs</p>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 max-w-7xl mx-auto px-4 md:px-6">
           {/* Express GP Service */}
           <Card 
-            className="group cursor-pointer hover:shadow-lg transition-all overflow-hidden relative min-h-[250px] md:min-h-[350px] bg-cover bg-center" 
+            className="group cursor-pointer hover:shadow-lg transition-all overflow-hidden relative min-h-[200px] sm:min-h-[250px] md:min-h-[350px] bg-cover bg-center" 
             onClick={() => navigate("/ship")}
             style={{
               backgroundImage: 'url("https://images.unsplash.com/photo-1566576721346-d4a3b4eaeb55?q=80&w=2000")',
@@ -40,7 +40,7 @@ const Index = () => {
 
           {/* Online Shopping Service */}
           <Card 
-            className="group cursor-pointer hover:shadow-lg transition-all overflow-hidden relative min-h-[250px] md:min-h-[350px] bg-cover bg-center"
+            className="group cursor-pointer hover:shadow-lg transition-all overflow-hidden relative min-h-[200px] sm:min-h-[250px] md:min-h-[350px] bg-cover bg-center"
             onClick={() => navigate("/order-for-me")}
             style={{
               backgroundImage: 'url("https://images.unsplash.com/photo-1607082349566-187342175e2f?q=80&w=2000")',
@@ -64,7 +64,7 @@ const Index = () => {
 
           {/* Air Cargo Service */}
           <Card 
-            className="relative group overflow-hidden min-h-[250px] md:min-h-[350px] bg-cover bg-center"
+            className="relative group overflow-hidden min-h-[200px] sm:min-h-[250px] md:min-h-[350px] bg-cover bg-center"
             style={{
               backgroundImage: 'url("https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2000")',
             }}
@@ -87,17 +87,17 @@ const Index = () => {
       <TestimonialsSection />
 
       {/* Footer */}
-      <footer className="bg-secondary mt-12 py-8">
+      <footer className="bg-secondary mt-8 md:mt-12 py-6 md:py-8">
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center justify-center space-y-4">
-            <div className="flex items-center justify-center space-x-6">
+            <div className="flex items-center justify-center space-x-4 md:space-x-6">
               <a 
                 href="https://facebook.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors"
               >
-                <Facebook className="h-6 w-6" />
+                <Facebook className="h-5 w-5 md:h-6 md:w-6" />
               </a>
               <a 
                 href="https://www.instagram.com/mo_multiservice/" 
@@ -105,7 +105,7 @@ const Index = () => {
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors"
               >
-                <Instagram className="h-6 w-6" />
+                <Instagram className="h-5 w-5 md:h-6 md:w-6" />
               </a>
               <a 
                 href="https://twitter.com" 
@@ -113,7 +113,7 @@ const Index = () => {
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors"
               >
-                <Twitter className="h-6 w-6" />
+                <Twitter className="h-5 w-5 md:h-6 md:w-6" />
               </a>
               <a 
                 href="https://tiktok.com" 
@@ -123,7 +123,7 @@ const Index = () => {
               >
                 <svg 
                   viewBox="0 0 24 24" 
-                  className="h-6 w-6"
+                  className="h-5 w-5 md:h-6 md:w-6"
                   fill="none" 
                   stroke="currentColor" 
                   strokeWidth="2" 
@@ -134,7 +134,7 @@ const Index = () => {
                 </svg>
               </a>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs md:text-sm text-muted-foreground text-center">
               © {new Date().getFullYear()} MO Multiservices LLC. All rights reserved.
             </p>
           </div>
