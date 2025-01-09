@@ -10,19 +10,19 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-6 md:py-12">
+      <div className="container mx-auto px-4 py-4 md:py-8">
         {/* Hero Section */}
-        <div className="space-y-4 mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-center">
+        <div className="space-y-3 md:space-y-4 mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-4xl font-bold text-center">
             Welcome to Our Shipping Solutions
           </h1>
-          <p className="text-base md:text-lg text-muted-foreground text-center max-w-2xl mx-auto">
+          <p className="text-sm md:text-lg text-muted-foreground text-center max-w-2xl mx-auto">
             Your trusted partner for all logistics needs
           </p>
         </div>
         
         {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-4xl mx-auto mb-8 md:mb-12">
           {/* Express GP Service */}
           <Card 
             className="group cursor-pointer hover:shadow-lg transition-all overflow-hidden relative aspect-[4/3] bg-cover bg-center" 
@@ -32,17 +32,17 @@ const Index = () => {
             }}
           >
             <div className="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors" />
-            <div className="absolute inset-0 p-6 flex flex-col items-center justify-center">
-              <div className="bg-primary/10 p-3 rounded-full mb-4 backdrop-blur-sm">
-                <Package className="h-6 w-6 text-white" />
+            <div className="absolute inset-0 p-4 md:p-6 flex flex-col items-center justify-center">
+              <div className="bg-primary/10 p-2 md:p-3 rounded-full mb-3 md:mb-4 backdrop-blur-sm">
+                <Package className="h-5 w-5 md:h-6 md:w-6 text-white" />
               </div>
-              <h2 className="text-xl md:text-2xl font-semibold mb-3 text-white text-center">Express GP</h2>
-              <p className="text-white/90 text-center text-sm md:text-base mb-4 max-w-xs">
+              <h2 className="text-lg md:text-2xl font-semibold mb-2 md:mb-3 text-white text-center">Express GP</h2>
+              <p className="text-white/90 text-center text-xs md:text-base mb-3 md:mb-4 max-w-xs">
                 Fast and reliable ground shipping services for all your needs
               </p>
               <Button 
                 variant="secondary" 
-                className="w-full max-w-[200px]"
+                className="w-full max-w-[180px] md:max-w-[200px] text-sm md:text-base py-1.5 md:py-2"
               >
                 Get Started
               </Button>
@@ -58,17 +58,17 @@ const Index = () => {
             }}
           >
             <div className="absolute inset-0 bg-black/50 group-hover:bg-black/40 transition-colors" />
-            <div className="absolute inset-0 p-6 flex flex-col items-center justify-center">
-              <div className="bg-primary/10 p-3 rounded-full mb-4 backdrop-blur-sm">
-                <ShoppingCart className="h-6 w-6 text-white" />
+            <div className="absolute inset-0 p-4 md:p-6 flex flex-col items-center justify-center">
+              <div className="bg-primary/10 p-2 md:p-3 rounded-full mb-3 md:mb-4 backdrop-blur-sm">
+                <ShoppingCart className="h-5 w-5 md:h-6 md:w-6 text-white" />
               </div>
-              <h2 className="text-xl md:text-2xl font-semibold mb-3 text-white text-center">Online Shopping</h2>
-              <p className="text-white/90 text-center text-sm md:text-base mb-4 max-w-xs">
+              <h2 className="text-lg md:text-2xl font-semibold mb-2 md:mb-3 text-white text-center">Online Shopping</h2>
+              <p className="text-white/90 text-center text-xs md:text-base mb-3 md:mb-4 max-w-xs">
                 We help you order items from US websites and handle shipping to your location
               </p>
               <Button 
                 variant="secondary" 
-                className="w-full max-w-[200px]"
+                className="w-full max-w-[180px] md:max-w-[200px] text-sm md:text-base py-1.5 md:py-2"
               >
                 Order for Me
               </Button>
@@ -83,16 +83,16 @@ const Index = () => {
             }}
           >
             <div className="absolute inset-0 bg-black/50" />
-            <div className="absolute inset-0 p-6 flex flex-col items-center justify-center">
-              <div className="bg-secondary/50 p-3 rounded-full mb-4 backdrop-blur-sm">
-                <Plane className="h-6 w-6 text-white" />
+            <div className="absolute inset-0 p-4 md:p-6 flex flex-col items-center justify-center">
+              <div className="bg-secondary/50 p-2 md:p-3 rounded-full mb-3 md:mb-4 backdrop-blur-sm">
+                <Plane className="h-5 w-5 md:h-6 md:w-6 text-white" />
               </div>
-              <h2 className="text-xl md:text-2xl font-semibold mb-3 text-white text-center">Air Cargo</h2>
-              <p className="text-white/90 text-center text-sm md:text-base mb-4 max-w-xs">
+              <h2 className="text-lg md:text-2xl font-semibold mb-2 md:mb-3 text-white text-center">Air Cargo</h2>
+              <p className="text-white/90 text-center text-xs md:text-base mb-3 md:mb-4 max-w-xs">
                 International air freight solutions for your business
               </p>
               <div className="absolute inset-0 bg-black/80 flex items-center justify-center">
-                <span className="text-xl md:text-2xl font-semibold text-white">Coming Soon</span>
+                <span className="text-lg md:text-2xl font-semibold text-white">Coming Soon</span>
               </div>
             </div>
           </Card>
@@ -102,15 +102,15 @@ const Index = () => {
       <TestimonialsSection />
 
       {/* Footer */}
-      <footer className="bg-secondary py-8">
+      <footer className="bg-secondary py-6 md:py-8">
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center justify-center space-y-4">
-            <div className="flex items-center justify-center space-x-6">
+            <div className="flex items-center justify-center space-x-6 md:space-x-8">
               <a 
                 href="https://facebook.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="text-muted-foreground hover:text-primary transition-colors p-2"
               >
                 <Facebook className="h-5 w-5" />
               </a>
@@ -118,7 +118,7 @@ const Index = () => {
                 href="https://www.instagram.com/mo_multiservice/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="text-muted-foreground hover:text-primary transition-colors p-2"
               >
                 <Instagram className="h-5 w-5" />
               </a>
@@ -126,7 +126,7 @@ const Index = () => {
                 href="https://twitter.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="text-muted-foreground hover:text-primary transition-colors p-2"
               >
                 <Twitter className="h-5 w-5" />
               </a>
@@ -134,7 +134,7 @@ const Index = () => {
                 href="https://tiktok.com" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
+                className="text-muted-foreground hover:text-primary transition-colors p-2"
               >
                 <svg 
                   viewBox="0 0 24 24" 
@@ -149,7 +149,7 @@ const Index = () => {
                 </svg>
               </a>
             </div>
-            <p className="text-sm text-muted-foreground text-center">
+            <p className="text-xs md:text-sm text-muted-foreground text-center">
               © {new Date().getFullYear()} MO Multiservices LLC. All rights reserved.
             </p>
           </div>
