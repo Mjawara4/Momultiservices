@@ -1,5 +1,5 @@
 import React from "react";
-import { format, parseISO, isFuture, isToday } from "date-fns";
+import { format } from "date-fns";
 import { Tables } from "@/integrations/supabase/types";
 
 interface ShipmentDetailsProps {
@@ -8,37 +8,14 @@ interface ShipmentDetailsProps {
 }
 
 export const ShipmentDetails = ({ shipments, date }: ShipmentDetailsProps) => {
-  console.log("All shipments:", shipments);
-  console.log("Selected date:", date);
-
-  // Filter shipments for the selected date
-  const filteredShipments = shipments.filter((shipment) => {
-    // Parse the shipping date string to a Date object
-    const shipmentDate = parseISO(shipment.shipping_date);
-    
-    // Format both dates to YYYY-MM-DD for comparison
-    const formattedShipmentDate = format(shipmentDate, 'yyyy-MM-dd');
-    const formattedSelectedDate = format(date, 'yyyy-MM-dd');
-    
-    console.log("Comparing dates:", {
-      shipmentDate: formattedShipmentDate,
-      selectedDate: formattedSelectedDate,
-      isMatch: formattedShipmentDate === formattedSelectedDate
-    });
-
-    return formattedShipmentDate === formattedSelectedDate;
-  });
-
-  console.log("Filtered shipments:", filteredShipments);
-
   return (
     <div className="space-y-2">
       <h3 className="font-semibold">
         {date ? format(date, "MMMM d, yyyy") : "Select a date"}
       </h3>
       <div className="space-y-1">
-        {filteredShipments.length > 0 ? (
-          filteredShipments.map((shipment) => (
+        {shipments.length > 0 ? (
+          shipments.map((shipment) => (
             <div key={shipment.id} className="p-2 bg-secondary rounded-md">
               <div className="flex justify-between items-center">
                 <div>
@@ -52,7 +29,7 @@ export const ShipmentDetails = ({ shipments, date }: ShipmentDetailsProps) => {
           ))
         ) : (
           <p className="text-muted-foreground">
-            No shipments scheduled for this date
+            No shipments scheduled
           </p>
         )}
       </div>
