@@ -2,7 +2,7 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { format, isAfter, startOfDay } from "date-fns";
+import { format, isAfter, startOfDay, parseISO } from "date-fns";
 import {
   Table,
   TableBody,
@@ -26,7 +26,8 @@ const ShipCalendar = () => {
       // Filter out past dates
       const today = startOfDay(new Date());
       return data.filter(date => 
-        isAfter(new Date(date.shipping_date), today)
+        isAfter(parseISO(date.shipping_date), today) || 
+        format(parseISO(date.shipping_date), 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd')
       );
     },
   });
@@ -51,7 +52,7 @@ const ShipCalendar = () => {
             {scheduledDates?.map((shipment) => (
               <TableRow key={shipment.id}>
                 <TableCell className="font-medium">
-                  {format(new Date(shipment.shipping_date), "MMMM d, yyyy")}
+                  {format(parseISO(shipment.shipping_date), "MMMM d, yyyy")}
                 </TableCell>
                 <TableCell>{shipment.from_location}</TableCell>
                 <TableCell>{shipment.to_location}</TableCell>
