@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send } from "lucide-react";
+import { KeyboardEvent } from "react";
 
 interface ChatInputProps {
   input: string;
@@ -10,6 +11,14 @@ interface ChatInputProps {
 }
 
 export const ChatInput = ({ input, isLoading, onInputChange, onSend }: ChatInputProps) => {
+  // Handle Enter key press
+  const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && !e.shiftKey && !isLoading) {
+      e.preventDefault();
+      onSend();
+    }
+  };
+
   return (
     <form
       onSubmit={(e) => {
@@ -21,6 +30,7 @@ export const ChatInput = ({ input, isLoading, onInputChange, onSend }: ChatInput
       <Input
         value={input}
         onChange={(e) => onInputChange(e.target.value)}
+        onKeyPress={handleKeyPress}
         placeholder="Type your message..."
         disabled={isLoading}
         className="flex-1"

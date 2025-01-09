@@ -1,61 +1,12 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { MessageCircle } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
 import { ChatMessages } from "./chat/ChatMessages";
 import { ChatInput } from "./chat/ChatInput";
-
-interface Message {
-  content: string;
-  isUser: boolean;
-}
+import { useChat } from "@/hooks/useChat";
 
 export const ChatSupport = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [input, setInput] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
-
-  const sendMessage = async () => {
-    if (!input.trim()) return;
-
-    setIsLoading(true);
-    const userMessage = input.trim();
-    setInput("");
-    
-    // Create a new array with the user message
-    const updatedMessages = [...messages, { content: userMessage, isUser: true }];
-    setMessages(updatedMessages);
-
-    try {
-      const { data, error } = await supabase.functions.invoke('chat-support', {
-        body: { 
-          message: userMessage,
-          // Pass the conversation history for context
-          history: updatedMessages.slice(-6).map(msg => ({
-            role: msg.isUser ? 'user' : 'assistant',
-            content: msg.content
-          }))
-        },
-      });
-
-      if (error) throw error;
-      
-      // Update messages with the AI response
-      setMessages(prev => [...prev, { content: data.response, isUser: false }]);
-    } catch (error) {
-      console.error('Error sending message:', error);
-      toast({
-        title: "Error",
-        description: "Failed to send message. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { messages, input, isLoading, setInput, sendMessage } = useChat();
 
   return (
     <Sheet>
