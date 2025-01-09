@@ -40,11 +40,11 @@ export function MainNavigation() {
   return (
     <Sidebar>
       <SidebarContent>
-        <div className="flex flex-col items-center p-4">
+        <div className="flex flex-col items-center p-4 bg-white rounded-lg m-2">
           <img 
             src="/lovable-uploads/4a704460-41a7-4da9-9823-4f82d1d02e7a.png" 
             alt="MQ Multiservices LLC" 
-            className="h-12 w-auto mb-4 cursor-pointer"
+            className="h-16 w-auto object-contain cursor-pointer hover:opacity-90 transition-opacity"
             onClick={() => navigate("/")}
           />
         </div>
