@@ -13,14 +13,13 @@ import {
 
 const ShipCalendar = () => {
   const { data: scheduledDates } = useQuery({
-    queryKey: ["ship-site-data"],
+    queryKey: ["scheduled-dates"],
     queryFn: async () => {
       console.log("Fetching shipping dates...");
       const { data, error } = await supabase
-        .from("ship_site_data")
+        .from("scheduled_shipping_dates")
         .select("*")
-        .eq('type', 'shipping')
-        .order('created_at', { ascending: true });
+        .order('shipping_date', { ascending: true });
       
       if (error) {
         console.error("Supabase error:", error);
@@ -31,7 +30,7 @@ const ShipCalendar = () => {
       
       // Filter for today and future dates
       const filteredDates = data?.filter(date => {
-        const shipDate = startOfDay(new Date(date.created_at));
+        const shipDate = startOfDay(parseISO(date.shipping_date));
         const today = startOfDay(new Date());
         return isToday(shipDate) || isFuture(shipDate);
       }) || [];
@@ -43,8 +42,8 @@ const ShipCalendar = () => {
   return (
     <div className="container mx-auto p-6">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">Shipping Schedule</h1>
-        <p className="text-muted-foreground mt-2">Showing upcoming shipping requests</p>
+        <h1 className="text-3xl font-bold">Available Shipping Dates</h1>
+        <p className="text-muted-foreground mt-2">Showing upcoming shipping dates only</p>
       </div>
 
       <Card className="p-6">
@@ -52,28 +51,24 @@ const ShipCalendar = () => {
           <TableHeader>
             <TableRow>
               <TableHead>Date</TableHead>
-              <TableHead>Name</TableHead>
               <TableHead>From Location</TableHead>
               <TableHead>To Location</TableHead>
-              <TableHead>Package Type</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {scheduledDates?.map((shipment) => (
               <TableRow key={shipment.id}>
                 <TableCell className="font-medium">
-                  {format(parseISO(shipment.created_at), "MMMM d, yyyy")}
+                  {format(parseISO(shipment.shipping_date), "MMMM d, yyyy")}
                 </TableCell>
-                <TableCell>{shipment.name}</TableCell>
                 <TableCell>{shipment.from_location}</TableCell>
                 <TableCell>{shipment.to_location}</TableCell>
-                <TableCell>{shipment.package_type}</TableCell>
               </TableRow>
             ))}
             {!scheduledDates?.length && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-muted-foreground">
-                  No upcoming shipping requests
+                <TableCell colSpan={3} className="text-center text-muted-foreground">
+                  No upcoming shipping dates scheduled
                 </TableCell>
               </TableRow>
             )}
