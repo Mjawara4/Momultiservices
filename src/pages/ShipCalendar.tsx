@@ -2,7 +2,7 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { format } from "date-fns";
+import { format, isAfter, startOfDay } from "date-fns";
 import {
   Table,
   TableBody,
@@ -22,7 +22,12 @@ const ShipCalendar = () => {
         .order('shipping_date', { ascending: true });
       
       if (error) throw error;
-      return data;
+      
+      // Filter out past dates
+      const today = startOfDay(new Date());
+      return data.filter(date => 
+        isAfter(new Date(date.shipping_date), today)
+      );
     },
   });
 
@@ -30,6 +35,7 @@ const ShipCalendar = () => {
     <div className="container mx-auto p-6">
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Available Shipping Dates</h1>
+        <p className="text-muted-foreground mt-2">Showing upcoming shipping dates only</p>
       </div>
 
       <Card className="p-6">
@@ -54,7 +60,7 @@ const ShipCalendar = () => {
             {!scheduledDates?.length && (
               <TableRow>
                 <TableCell colSpan={3} className="text-center text-muted-foreground">
-                  No shipping dates scheduled
+                  No upcoming shipping dates scheduled
                 </TableCell>
               </TableRow>
             )}
