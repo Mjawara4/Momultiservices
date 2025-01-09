@@ -1,5 +1,5 @@
 import React from "react";
-import { format, parseISO, isFuture, isToday, startOfDay } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { Tables } from "@/integrations/supabase/types";
 
 interface ShipmentDetailsProps {
@@ -8,13 +8,11 @@ interface ShipmentDetailsProps {
 }
 
 export const ShipmentDetails = ({ shipments, date }: ShipmentDetailsProps) => {
-  // Filter shipments for the selected date and ensure it's not in the past
+  // Filter shipments for the selected date without any additional date restrictions
   const filteredShipments = shipments.filter((shipment) => {
-    const shipmentDate = startOfDay(parseISO(shipment.shipping_date));
-    const selectedDate = startOfDay(date);
-    const isSameDate = format(shipmentDate, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
-    const isValidDate = isToday(shipmentDate) || isFuture(shipmentDate);
-    return isSameDate && isValidDate;
+    const shipmentDate = format(parseISO(shipment.shipping_date), 'yyyy-MM-dd');
+    const selectedDate = format(date, 'yyyy-MM-dd');
+    return shipmentDate === selectedDate;
   });
 
   return (
