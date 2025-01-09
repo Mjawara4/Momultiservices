@@ -10,7 +10,10 @@ export function TestimonialCard({ name, message, avatarUrl }: TestimonialProps) 
   return (
     <div className="flex flex-col items-center p-6 space-y-4 text-center">
       <Avatar className="h-16 w-16">
-        <AvatarImage src={avatarUrl || "https://images.unsplash.com/photo-1581092795360-fd1ca04f0952"} alt={name} />
+        <AvatarImage 
+          src="/lovable-uploads/4a704460-41a7-4da9-9823-4f82d1d02e7a.png" 
+          alt="MQ Multiservices LLC Logo" 
+        />
         <AvatarFallback>{name[0]}</AvatarFallback>
       </Avatar>
       <div className="space-y-2">
