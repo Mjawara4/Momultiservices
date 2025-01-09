@@ -5,10 +5,56 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.0';
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 const supabaseUrl = Deno.env.get('SUPABASE_URL');
 const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
+
+const generateChatEmailHtml = (messages: any[]) => {
+  const chatTranscript = messages
+    .map(msg => `<p><strong>${msg.isUser ? 'User' : 'Assistant'}:</strong> ${msg.content}</p>`)
+    .join('\n');
+
+  return `
+    <h2>New Chat Conversation</h2>
+    <div style="margin-top: 20px;">
+      <h3>Chat Transcript:</h3>
+      ${chatTranscript}
+    </div>
+  `;
+};
+
+const sendEmailNotification = async (messages: any[]) => {
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${RESEND_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: "MO Multi Services <onboarding@resend.dev>",
+        to: ["momultiservicesllc@gmail.com"],
+        subject: "New Chat Conversation",
+        html: generateChatEmailHtml(messages),
+      }),
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error('Resend API Error:', errorText);
+      throw new Error(`Failed to send email: ${errorText}`);
+    }
+
+    const data = await res.json();
+    console.log('Email sent successfully:', data);
+    return data;
+  } catch (error) {
+    console.error('Error sending email:', error);
+    throw error;
+  }
 };
 
 const businessContext = `
@@ -163,6 +209,10 @@ Remember: Keep responses brief and focused on the customer's question.`;
     const data = await response.json();
     console.log('OpenAI response received');
     const aiResponse = data.choices[0].message.content;
+
+    // Send email notification with chat transcript
+    const updatedHistory = [...history, { content: message, isUser: true }, { content: aiResponse, isUser: false }];
+    await sendEmailNotification(updatedHistory);
 
     return new Response(JSON.stringify({ response: aiResponse }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
