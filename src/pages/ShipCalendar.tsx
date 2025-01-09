@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { format, parseISO } from "date-fns";
+import { format, parseISO, isFuture, isToday, startOfDay } from "date-fns";
 import {
   Table,
   TableBody,
@@ -27,7 +27,15 @@ const ShipCalendar = () => {
       }
       
       console.log("Raw data from Supabase:", data);
-      return data || [];
+      
+      // Filter for today and future dates
+      const filteredDates = data?.filter(date => {
+        const shipDate = startOfDay(parseISO(date.shipping_date));
+        const today = startOfDay(new Date());
+        return isToday(shipDate) || isFuture(shipDate);
+      }) || [];
+
+      return filteredDates;
     },
   });
 
@@ -35,7 +43,7 @@ const ShipCalendar = () => {
     <div className="container mx-auto p-6">
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Available Shipping Dates</h1>
-        <p className="text-muted-foreground mt-2">All scheduled shipping dates</p>
+        <p className="text-muted-foreground mt-2">Showing upcoming shipping dates only</p>
       </div>
 
       <Card className="p-6">
@@ -60,7 +68,7 @@ const ShipCalendar = () => {
             {!scheduledDates?.length && (
               <TableRow>
                 <TableCell colSpan={3} className="text-center text-muted-foreground">
-                  No shipping dates scheduled
+                  No upcoming shipping dates scheduled
                 </TableCell>
               </TableRow>
             )}
