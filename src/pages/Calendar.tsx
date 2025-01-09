@@ -1,52 +1,22 @@
-import { useQuery } from "@tanstack/react-query";
+import { useState, useMemo } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Card } from "@/components/ui/card";
-import { supabase } from "@/integrations/supabase/client";
-import { format, parseISO, isFuture, isToday, startOfDay } from "date-fns";
 import { ShipmentDetails } from "@/components/shipping-calendar/ShipmentDetails";
 import { LocationFilters } from "@/components/shipping-calendar/LocationFilters";
-import { useState, useEffect, useMemo } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import type { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
-import type { Database } from "@/integrations/supabase/types";
-
-type ShippingDate = Database['public']['Tables']['scheduled_shipping_dates']['Row'];
-
-interface ShippingPayload extends RealtimePostgresChangesPayload<{
-  shipping_date: string;
-  from_location: string;
-  to_location: string;
-}> {}
+import { useShippingDates } from "@/hooks/useShippingDates";
+import { useShippingUpdates } from "@/hooks/useShippingUpdates";
+import type { ShippingDate } from "@/types/calendar";
 
 const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [filterFromLocation, setFilterFromLocation] = useState("all");
   const [filterToLocation, setFilterToLocation] = useState("all");
-  const queryClient = useQueryClient();
+
+  // Initialize real-time updates
+  useShippingUpdates();
 
   // Fetch shipping dates
-  const { data: shipments = [], isLoading } = useQuery<ShippingDate[]>({
-    queryKey: ["scheduled-shipping-dates"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("scheduled_shipping_dates")
-        .select("*")
-        .order('shipping_date', { ascending: true });
-      
-      if (error) {
-        console.error("Error fetching shipping dates:", error);
-        throw error;
-      }
-      
-      // Filter for today and future dates
-      return (data || []).filter(date => {
-        const shipDate = startOfDay(parseISO(date.shipping_date));
-        const today = startOfDay(new Date());
-        return isToday(shipDate) || isFuture(shipDate);
-      });
-    },
-  });
+  const { data: shipments = [], isLoading } = useShippingDates();
 
   // Calculate unique locations
   const { uniqueFromLocations, uniqueToLocations } = useMemo(() => ({
@@ -63,48 +33,6 @@ const CalendarPage = () => {
     }), 
     [shipments, filterFromLocation, filterToLocation]
   );
-
-  // Handle real-time updates
-  useEffect(() => {
-    const channel = supabase
-      .channel('shipping-updates')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'scheduled_shipping_dates'
-        },
-        (payload: ShippingPayload) => {
-          console.log('Real-time update received:', payload);
-          queryClient.invalidateQueries({ queryKey: ["scheduled-shipping-dates"] });
-          
-          if (!payload.new && !payload.old) return;
-          
-          const shippingDate = payload.new?.shipping_date || payload.old?.shipping_date;
-          if (!shippingDate) return;
-          
-          const date = format(new Date(shippingDate), "MMMM d, yyyy");
-          
-          switch (payload.eventType) {
-            case 'INSERT':
-              toast.success(`New shipment scheduled for ${date}`);
-              break;
-            case 'UPDATE':
-              toast.info(`Shipment updated for ${date}`);
-              break;
-            case 'DELETE':
-              toast.warning(`Shipment removed for ${date}`);
-              break;
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [queryClient]);
 
   if (isLoading) {
     return <div>Loading...</div>;
