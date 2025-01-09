@@ -12,6 +12,7 @@ import type { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import type { Database } from "@/integrations/supabase/types";
 
 type ShippingDate = Database['public']['Tables']['scheduled_shipping_dates']['Row'];
+type ShippingPayload = RealtimePostgresChangesPayload<ShippingDate>;
 
 const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
@@ -76,7 +77,7 @@ const CalendarPage = () => {
           schema: 'public',
           table: 'scheduled_shipping_dates'
         },
-        (payload: RealtimePostgresChangesPayload<ShippingDate>) => {
+        (payload: ShippingPayload) => {
           console.log('Real-time update received:', payload);
           queryClient.invalidateQueries({ queryKey: ["scheduled-shipping-dates"] });
           
