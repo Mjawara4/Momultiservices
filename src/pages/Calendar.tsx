@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Calendar } from "@/components/ui/calendar";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { format } from "date-fns";
+import { format, parseISO, isFuture, isToday, startOfDay } from "date-fns";
 import { ShipmentDetails } from "@/components/shipping-calendar/ShipmentDetails";
 import { LocationFilters } from "@/components/shipping-calendar/LocationFilters";
 import { useState, useEffect, useMemo } from "react";
@@ -22,14 +22,27 @@ const CalendarPage = () => {
   const { data: shipments = [], isLoading } = useQuery({
     queryKey: ["scheduled-shipping-dates"],
     queryFn: async () => {
+      console.log("Fetching shipping dates...");
       const { data, error } = await supabase
         .from("scheduled_shipping_dates")
         .select("*")
         .order('shipping_date', { ascending: true });
       
-      if (error) throw error;
-      console.log("Fetched shipments:", data);
-      return data;
+      if (error) {
+        console.error("Supabase error:", error);
+        throw error;
+      }
+      
+      console.log("Raw data from Supabase:", data);
+      
+      // Filter for today and future dates
+      const filteredDates = data?.filter(date => {
+        const shipDate = startOfDay(parseISO(date.shipping_date));
+        const today = startOfDay(new Date());
+        return isToday(shipDate) || isFuture(shipDate);
+      }) || [];
+
+      return filteredDates;
     },
   });
 
@@ -114,6 +127,10 @@ const CalendarPage = () => {
             selected={selectedDate}
             onSelect={setSelectedDate}
             className="rounded-md border"
+            disabled={(date) => {
+              const today = startOfDay(new Date());
+              return date < today;
+            }}
           />
         </Card>
         <Card className="p-6">
