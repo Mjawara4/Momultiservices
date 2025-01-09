@@ -30,7 +30,7 @@ const Layout = ({ children }: LayoutProps) => {
               
               <div className="mx-auto">
                 <img 
-                  src="/placeholder.svg" 
+                  src="/lovable-uploads/4a704460-41a7-4da9-9823-4f82d1d02e7a.png" 
                   alt="MQ Multiservices LLC" 
                   className="h-16 w-auto object-contain cursor-pointer hover:opacity-90 transition-opacity"
                   onClick={() => navigate("/")}
