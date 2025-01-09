@@ -1,4 +1,3 @@
-import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
@@ -21,14 +20,27 @@ const ShipCalendar = () => {
         .select("*")
         .order('shipping_date', { ascending: true });
       
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase error:", error);
+        throw error;
+      }
+      
+      console.log("Raw data from Supabase:", data);
       
       // Filter out past dates
       const today = startOfDay(new Date());
-      return data.filter(date => 
-        isAfter(parseISO(date.shipping_date), today) || 
-        format(parseISO(date.shipping_date), 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd')
-      );
+      console.log("Today's date:", format(today, 'yyyy-MM-dd'));
+      
+      const filteredDates = data.filter(date => {
+        const parsedDate = parseISO(date.shipping_date);
+        const isAfterToday = isAfter(parsedDate, today);
+        const isToday = format(parsedDate, 'yyyy-MM-dd') === format(today, 'yyyy-MM-dd');
+        console.log("Date being checked:", date.shipping_date, "Is after today:", isAfterToday, "Is today:", isToday);
+        return isAfterToday || isToday;
+      });
+      
+      console.log("Filtered dates:", filteredDates);
+      return filteredDates;
     },
   });
 
