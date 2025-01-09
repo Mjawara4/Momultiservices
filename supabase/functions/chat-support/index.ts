@@ -147,7 +147,7 @@ Remember: Keep responses brief and focused on the customer's question.`;
           },
           { role: 'user', content: message }
         ],
-        max_tokens: 150,
+        max_tokens: 500, // Increased from 150 to 500
         temperature: 0.7,
       }),
     });
