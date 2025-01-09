@@ -19,7 +19,7 @@ const CalendarPage = () => {
   const [filterToLocation, setFilterToLocation] = useState("all");
   const queryClient = useQueryClient();
 
-  const { data: shipments = [], isLoading } = useQuery({
+  const { data: shipments = [], isLoading } = useQuery<ShippingDate[]>({
     queryKey: ["scheduled-shipping-dates"],
     queryFn: async () => {
       console.log("Fetching shipping dates...");
@@ -36,11 +36,11 @@ const CalendarPage = () => {
       console.log("Raw data from Supabase:", data);
       
       // Filter for today and future dates
-      const filteredDates = data?.filter(date => {
+      const filteredDates = (data || []).filter(date => {
         const shipDate = startOfDay(parseISO(date.shipping_date));
         const today = startOfDay(new Date());
         return isToday(shipDate) || isFuture(shipDate);
-      }) || [];
+      });
 
       return filteredDates;
     },
