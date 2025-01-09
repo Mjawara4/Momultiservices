@@ -1,4 +1,4 @@
-import { Home, Phone, Info, Package, Menu, ShoppingCart } from "lucide-react";
+import { Phone, Info, Package, Menu, ShoppingCart } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -9,13 +9,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useNavigate } from "react-router-dom";
 
 const navigationItems = [
-  {
-    title: "Home",
-    url: "/",
-    icon: Home,
-  },
   {
     title: "Services",
     url: "/ship",
@@ -39,9 +35,19 @@ const navigationItems = [
 ];
 
 export function MainNavigation() {
+  const navigate = useNavigate();
+
   return (
     <Sidebar>
       <SidebarContent>
+        <div className="flex flex-col items-center p-4">
+          <img 
+            src="/lovable-uploads/4a704460-41a7-4da9-9823-4f82d1d02e7a.png" 
+            alt="MQ Multiservices LLC" 
+            className="h-12 w-auto mb-4 cursor-pointer"
+            onClick={() => navigate("/")}
+          />
+        </div>
         <SidebarGroup>
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
