@@ -1,6 +1,5 @@
 import React from "react";
 import { format } from "date-fns";
-import { Badge } from "@/components/ui/badge";
 import { Tables } from "@/integrations/supabase/types";
 
 interface ShipmentDetailsProps {
@@ -9,14 +8,20 @@ interface ShipmentDetailsProps {
 }
 
 export const ShipmentDetails = ({ shipments, date }: ShipmentDetailsProps) => {
+  // Filter shipments for the selected date
+  const filteredShipments = shipments.filter((shipment) => {
+    const shipmentDate = new Date(shipment.shipping_date);
+    return format(shipmentDate, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd');
+  });
+
   return (
     <div className="space-y-2">
       <h3 className="font-semibold">
         {date ? format(date, "MMMM d, yyyy") : "Select a date"}
       </h3>
       <div className="space-y-1">
-        {shipments.length > 0 ? (
-          shipments.map((shipment) => (
+        {filteredShipments.length > 0 ? (
+          filteredShipments.map((shipment) => (
             <div key={shipment.id} className="p-2 bg-secondary rounded-md">
               <div className="flex justify-between items-center">
                 <div>
