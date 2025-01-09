@@ -2,11 +2,15 @@ import { useQuery } from "@tanstack/react-query";
 import { Calendar } from "@/components/ui/calendar";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
 import { ShipmentDetails } from "@/components/shipping-calendar/ShipmentDetails";
 import { useState, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import type { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
+import type { Database } from "@/integrations/supabase/types";
+
+type ShippingDate = Database['public']['Tables']['scheduled_shipping_dates']['Row'];
 
 const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
@@ -33,31 +37,32 @@ const CalendarPage = () => {
       .on(
         'postgres_changes',
         {
-          event: '*', // Listen to all events (INSERT, UPDATE, DELETE)
+          event: '*',
           schema: 'public',
           table: 'scheduled_shipping_dates'
         },
-        (payload) => {
+        (payload: RealtimePostgresChangesPayload<ShippingDate>) => {
           console.log('Real-time update received:', payload);
-          // Invalidate and refetch the query
           queryClient.invalidateQueries({ queryKey: ["scheduled-shipping-dates"] });
           
-          // Show a toast notification based on the event type
           const event = payload.eventType;
-          const date = format(new Date(payload.new?.shipping_date || payload.old?.shipping_date), "MMMM d, yyyy");
+          const shippingDate = payload.new?.shipping_date || payload.old?.shipping_date;
           
-          if (event === 'INSERT') {
-            toast.success(`New shipment scheduled for ${date}`);
-          } else if (event === 'UPDATE') {
-            toast.info(`Shipment updated for ${date}`);
-          } else if (event === 'DELETE') {
-            toast.warning(`Shipment removed for ${date}`);
+          if (shippingDate) {
+            const date = format(new Date(shippingDate), "MMMM d, yyyy");
+            
+            if (event === 'INSERT') {
+              toast.success(`New shipment scheduled for ${date}`);
+            } else if (event === 'UPDATE') {
+              toast.info(`Shipment updated for ${date}`);
+            } else if (event === 'DELETE') {
+              toast.warning(`Shipment removed for ${date}`);
+            }
           }
         }
       )
       .subscribe();
 
-    // Cleanup subscription on component unmount
     return () => {
       supabase.removeChannel(channel);
     };

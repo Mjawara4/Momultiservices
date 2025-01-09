@@ -93,29 +93,41 @@ serve(async (req) => {
       throw new Error('No message provided');
     }
 
+    // Fetch upcoming shipping dates
     console.log('Fetching shipping dates...');
     const { data: shippingDates, error: shippingError } = await supabase
       .from('scheduled_shipping_dates')
       .select('*')
       .gte('shipping_date', new Date().toISOString())
       .order('shipping_date', { ascending: true })
-      .limit(3);
+      .limit(5);
 
     if (shippingError) {
       console.error('Error fetching shipping dates:', shippingError);
       throw shippingError;
     }
 
-    console.log('Shipping dates fetched:', shippingDates);
-    const shippingSchedule = shippingDates
-      .map(date => `${new Date(date.shipping_date).toLocaleDateString()}: ${date.from_location} to ${date.to_location}`)
-      .join('\n');
+    // Format shipping dates for context
+    const formattedDates = shippingDates.map(date => ({
+      date: new Date(date.shipping_date).toLocaleDateString(),
+      from: date.from_location,
+      to: date.to_location
+    }));
 
+    console.log('Shipping dates fetched:', formattedDates);
+
+    // Create dynamic context with latest shipping information
     const dynamicContext = `
 ${businessContext}
 
-Next Shipping Dates:
-${shippingSchedule}
+Current Shipping Schedule (next 5 upcoming dates):
+${formattedDates.map(d => `- ${d.date}: ${d.from} to ${d.to}`).join('\n')}
+
+When asked about shipping dates or schedule:
+1. Always provide the most recent schedule information above
+2. Mention that schedules are updated in real-time
+3. Recommend checking the calendar page for the full schedule
+4. Note that users can receive real-time notifications for schedule changes
 
 Remember: Keep responses brief and focused on the customer's question.`;
 
@@ -127,7 +139,7 @@ Remember: Keep responses brief and focused on the customer's question.`;
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4',
         messages: [
           { 
             role: 'system', 
