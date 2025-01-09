@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { format, parseISO, isFuture, isToday } from "date-fns";
+import { format, parseISO, isFuture, isToday, startOfDay } from "date-fns";
 import {
   Table,
   TableBody,
@@ -15,6 +15,7 @@ const ShipCalendar = () => {
   const { data: scheduledDates } = useQuery({
     queryKey: ["scheduled-dates"],
     queryFn: async () => {
+      console.log("Fetching shipping dates...");
       const { data, error } = await supabase
         .from("scheduled_shipping_dates")
         .select("*")
@@ -25,11 +26,19 @@ const ShipCalendar = () => {
         throw error;
       }
       
+      console.log("Raw data from Supabase:", data);
+      
       // Filter for today and future dates
-      return data?.filter(date => {
-        const shipDate = parseISO(date.shipping_date);
-        return isToday(shipDate) || isFuture(shipDate);
+      const filteredDates = data?.filter(date => {
+        const shipDate = startOfDay(parseISO(date.shipping_date));
+        const today = startOfDay(new Date());
+        const isValid = isToday(shipDate) || isFuture(shipDate);
+        console.log("Date being checked:", format(shipDate, "yyyy-MM-dd"), "Is valid:", isValid);
+        return isValid;
       }) || [];
+
+      console.log("Filtered dates:", filteredDates);
+      return filteredDates;
     },
   });
 

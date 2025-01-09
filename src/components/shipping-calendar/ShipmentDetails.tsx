@@ -1,5 +1,5 @@
 import React from "react";
-import { format } from "date-fns";
+import { format, parseISO, startOfDay } from "date-fns";
 import { Tables } from "@/integrations/supabase/types";
 
 interface ShipmentDetailsProps {
@@ -10,8 +10,15 @@ interface ShipmentDetailsProps {
 export const ShipmentDetails = ({ shipments, date }: ShipmentDetailsProps) => {
   // Filter shipments for the selected date
   const filteredShipments = shipments.filter((shipment) => {
-    const shipmentDate = new Date(shipment.shipping_date);
-    return format(shipmentDate, 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd');
+    const shipmentDate = startOfDay(parseISO(shipment.shipping_date));
+    const selectedDate = startOfDay(date);
+    const isSameDate = format(shipmentDate, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
+    console.log("Comparing dates:", {
+      shipmentDate: format(shipmentDate, 'yyyy-MM-dd'),
+      selectedDate: format(selectedDate, 'yyyy-MM-dd'),
+      isSameDate
+    });
+    return isSameDate;
   });
 
   return (
