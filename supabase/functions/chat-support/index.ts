@@ -87,13 +87,13 @@ serve(async (req) => {
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    const { message } = await req.json();
+    const { message, history = [] } = await req.json();
     
     if (!message) {
       throw new Error('No message provided');
     }
 
-    // Fetch upcoming shipping dates
+    // Fetch shipping dates
     console.log('Fetching shipping dates...');
     const { data: shippingDates, error: shippingError } = await supabase
       .from('scheduled_shipping_dates')
@@ -132,6 +132,14 @@ When asked about shipping dates or schedule:
 Remember: Keep responses brief and focused on the customer's question.`;
 
     console.log('Calling OpenAI API...');
+    
+    // Prepare messages array with context and history
+    const messages = [
+      { role: 'system', content: dynamicContext },
+      ...history,
+      { role: 'user', content: message }
+    ];
+
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -140,14 +148,8 @@ Remember: Keep responses brief and focused on the customer's question.`;
       },
       body: JSON.stringify({
         model: 'gpt-4',
-        messages: [
-          { 
-            role: 'system', 
-            content: dynamicContext
-          },
-          { role: 'user', content: message }
-        ],
-        max_tokens: 500, // Increased from 150 to 500
+        messages: messages,
+        max_tokens: 500,
         temperature: 0.7,
       }),
     });

@@ -22,17 +22,28 @@ export const ChatSupport = () => {
     if (!input.trim()) return;
 
     setIsLoading(true);
-    const userMessage = input;
+    const userMessage = input.trim();
     setInput("");
     
-    setMessages(prev => [...prev, { content: userMessage, isUser: true }]);
+    // Create a new array with the user message
+    const updatedMessages = [...messages, { content: userMessage, isUser: true }];
+    setMessages(updatedMessages);
 
     try {
       const { data, error } = await supabase.functions.invoke('chat-support', {
-        body: { message: userMessage },
+        body: { 
+          message: userMessage,
+          // Pass the conversation history for context
+          history: updatedMessages.slice(-6).map(msg => ({
+            role: msg.isUser ? 'user' : 'assistant',
+            content: msg.content
+          }))
+        },
       });
 
       if (error) throw error;
+      
+      // Update messages with the AI response
       setMessages(prev => [...prev, { content: data.response, isUser: false }]);
     } catch (error) {
       console.error('Error sending message:', error);
@@ -51,7 +62,6 @@ export const ChatSupport = () => {
       <SheetTrigger asChild>
         <Button
           variant="outline"
-          size="icon"
           className="fixed bottom-4 right-4 h-12 w-auto px-4 rounded-full shadow-lg z-50 flex items-center gap-2"
         >
           <MessageCircle className="h-6 w-6" />
