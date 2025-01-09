@@ -4,10 +4,13 @@ import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { format, parseISO } from "date-fns";
 import { ShipmentDetails } from "@/components/shipping-calendar/ShipmentDetails";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const queryClient = useQueryClient();
 
   const { data: shipments, isLoading } = useQuery({
     queryKey: ["scheduled-shipping-dates"],
@@ -22,6 +25,43 @@ const CalendarPage = () => {
       return data;
     },
   });
+
+  // Subscribe to real-time changes
+  useEffect(() => {
+    const channel = supabase
+      .channel('shipping-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: '*', // Listen to all events (INSERT, UPDATE, DELETE)
+          schema: 'public',
+          table: 'scheduled_shipping_dates'
+        },
+        (payload) => {
+          console.log('Real-time update received:', payload);
+          // Invalidate and refetch the query
+          queryClient.invalidateQueries({ queryKey: ["scheduled-shipping-dates"] });
+          
+          // Show a toast notification based on the event type
+          const event = payload.eventType;
+          const date = format(new Date(payload.new?.shipping_date || payload.old?.shipping_date), "MMMM d, yyyy");
+          
+          if (event === 'INSERT') {
+            toast.success(`New shipment scheduled for ${date}`);
+          } else if (event === 'UPDATE') {
+            toast.info(`Shipment updated for ${date}`);
+          } else if (event === 'DELETE') {
+            toast.warning(`Shipment removed for ${date}`);
+          }
+        }
+      )
+      .subscribe();
+
+    // Cleanup subscription on component unmount
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient]);
 
   if (isLoading) {
     return <div>Loading...</div>;
