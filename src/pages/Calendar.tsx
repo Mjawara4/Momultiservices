@@ -12,10 +12,12 @@ import type { RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import type { Database } from "@/integrations/supabase/types";
 
 type ShippingDate = Database['public']['Tables']['scheduled_shipping_dates']['Row'];
-type ShippingPayload = RealtimePostgresChangesPayload<{
-  [key: string]: any;
+
+interface ShippingPayload extends RealtimePostgresChangesPayload<{
   shipping_date: string;
-}>;
+  from_location: string;
+  to_location: string;
+}> {}
 
 const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
@@ -23,53 +25,46 @@ const CalendarPage = () => {
   const [filterToLocation, setFilterToLocation] = useState("all");
   const queryClient = useQueryClient();
 
+  // Fetch shipping dates
   const { data: shipments = [], isLoading } = useQuery<ShippingDate[]>({
     queryKey: ["scheduled-shipping-dates"],
     queryFn: async () => {
-      console.log("Fetching shipping dates...");
       const { data, error } = await supabase
         .from("scheduled_shipping_dates")
         .select("*")
         .order('shipping_date', { ascending: true });
       
       if (error) {
-        console.error("Supabase error:", error);
+        console.error("Error fetching shipping dates:", error);
         throw error;
       }
       
-      console.log("Raw data from Supabase:", data);
-      
       // Filter for today and future dates
-      const filteredDates = (data || []).filter(date => {
+      return (data || []).filter(date => {
         const shipDate = startOfDay(parseISO(date.shipping_date));
         const today = startOfDay(new Date());
         return isToday(shipDate) || isFuture(shipDate);
       });
-
-      return filteredDates;
     },
   });
 
-  // Get unique locations for filters
-  const { uniqueFromLocations, uniqueToLocations } = useMemo(() => {
-    const fromLocations = [...new Set(shipments.map(s => s.from_location))];
-    const toLocations = [...new Set(shipments.map(s => s.to_location))];
-    return {
-      uniqueFromLocations: fromLocations,
-      uniqueToLocations: toLocations
-    };
-  }, [shipments]);
+  // Calculate unique locations
+  const { uniqueFromLocations, uniqueToLocations } = useMemo(() => ({
+    uniqueFromLocations: [...new Set(shipments.map(s => s.from_location))],
+    uniqueToLocations: [...new Set(shipments.map(s => s.to_location))]
+  }), [shipments]);
 
   // Filter shipments based on selected locations
-  const filteredShipments = useMemo(() => {
-    return shipments.filter(shipment => {
+  const filteredShipments = useMemo(() => 
+    shipments.filter(shipment => {
       const matchesFromLocation = filterFromLocation === "all" || shipment.from_location === filterFromLocation;
       const matchesToLocation = filterToLocation === "all" || shipment.to_location === filterToLocation;
       return matchesFromLocation && matchesToLocation;
-    });
-  }, [shipments, filterFromLocation, filterToLocation]);
+    }), 
+    [shipments, filterFromLocation, filterToLocation]
+  );
 
-  // Subscribe to real-time changes
+  // Handle real-time updates
   useEffect(() => {
     const channel = supabase
       .channel('shipping-updates')
@@ -84,19 +79,23 @@ const CalendarPage = () => {
           console.log('Real-time update received:', payload);
           queryClient.invalidateQueries({ queryKey: ["scheduled-shipping-dates"] });
           
-          const event = payload.eventType;
-          const shippingDate = payload.new?.shipping_date || payload.old?.shipping_date;
+          if (!payload.new && !payload.old) return;
           
-          if (shippingDate) {
-            const date = format(new Date(shippingDate), "MMMM d, yyyy");
-            
-            if (event === 'INSERT') {
+          const shippingDate = payload.new?.shipping_date || payload.old?.shipping_date;
+          if (!shippingDate) return;
+          
+          const date = format(new Date(shippingDate), "MMMM d, yyyy");
+          
+          switch (payload.eventType) {
+            case 'INSERT':
               toast.success(`New shipment scheduled for ${date}`);
-            } else if (event === 'UPDATE') {
+              break;
+            case 'UPDATE':
               toast.info(`Shipment updated for ${date}`);
-            } else if (event === 'DELETE') {
+              break;
+            case 'DELETE':
               toast.warning(`Shipment removed for ${date}`);
-            }
+              break;
           }
         }
       )
