@@ -1,15 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-import { Package, Plane, ShoppingCart } from "lucide-react";
+import { Package, Plane, ShoppingCart, Facebook, Instagram, Twitter } from "lucide-react";
 import { TestimonialsSection } from "@/components/testimonials/TestimonialsSection";
 
 const Index = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8 md:py-12">
+    <div className="min-h-screen bg-background flex flex-col">
+      <div className="container mx-auto px-4 py-8 md:py-12 flex-grow">
         <h1 className="text-2xl md:text-4xl font-bold text-center mb-2 md:mb-4">Welcome to Our Shipping Solutions</h1>
         <p className="text-sm md:text-lg text-muted-foreground text-center mb-6 md:mb-12 max-w-2xl mx-auto">Your trusted partner for all logistics needs</p>
         
@@ -85,6 +85,43 @@ const Index = () => {
       </div>
       
       <TestimonialsSection />
+
+      {/* Footer */}
+      <footer className="bg-secondary mt-12 py-8">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col items-center justify-center space-y-4">
+            <div className="flex items-center justify-center space-x-6">
+              <a 
+                href="https://facebook.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Facebook className="h-6 w-6" />
+              </a>
+              <a 
+                href="https://instagram.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Instagram className="h-6 w-6" />
+              </a>
+              <a 
+                href="https://twitter.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Twitter className="h-6 w-6" />
+              </a>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              © {new Date().getFullYear()} MO Multiservices LLC. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
