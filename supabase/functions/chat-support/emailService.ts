@@ -1,13 +1,28 @@
 export const generateChatEmailHtml = (messages: any[]) => {
   const chatTranscript = messages
-    .map(msg => `<p><strong>${msg.isUser ? 'User' : 'Assistant'}:</strong> ${msg.content}</p>`)
+    .map(msg => {
+      const role = msg.isUser ? 'Customer' : 'AI Assistant';
+      const style = msg.isUser 
+        ? 'background-color: #f3f4f6; padding: 10px; border-radius: 8px; margin: 5px 0;'
+        : 'background-color: #e5e7eb; padding: 10px; border-radius: 8px; margin: 5px 0;';
+      
+      return `
+        <div style="${style}">
+          <strong>${role}:</strong><br>
+          ${msg.content}
+        </div>
+      `;
+    })
     .join('\n');
 
   return `
-    <h2>New Chat Conversation</h2>
-    <div style="margin-top: 20px;">
-      <h3>Chat Transcript:</h3>
-      ${chatTranscript}
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2 style="color: #374151;">New Chat Conversation</h2>
+      <p style="color: #6b7280;">A customer has just finished a chat conversation with the AI assistant.</p>
+      <div style="margin-top: 20px;">
+        <h3 style="color: #374151;">Chat Transcript:</h3>
+        ${chatTranscript}
+      </div>
     </div>
   `;
 };
@@ -16,7 +31,6 @@ export const sendEmailNotification = async (messages: any[]) => {
   const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
   
   try {
-    // For testing, send to verified email
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -26,7 +40,7 @@ export const sendEmailNotification = async (messages: any[]) => {
       body: JSON.stringify({
         from: "onboarding@resend.dev",
         to: ["mjawara4@icloud.com"], // Using verified email for testing
-        subject: "New Chat Conversation",
+        subject: "New Chat Conversation Transcript",
         html: generateChatEmailHtml(messages),
       }),
     });

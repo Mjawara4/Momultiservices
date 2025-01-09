@@ -84,7 +84,19 @@ serve(async (req) => {
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    const { message, history = [] } = await req.json();
+    const body = await req.json();
+    
+    // Handle conversation end event
+    if (body.type === 'conversation_end') {
+      console.log('Sending conversation transcript...');
+      await sendEmailNotification(body.history);
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Handle regular chat message
+    const { message, history = [] } = body;
     
     if (!message) {
       throw new Error('No message provided');
@@ -128,10 +140,6 @@ ${formattedDates.map(d => `- ${d.date}: ${d.from} to ${d.to}`).join('\n')}
 
     // Get AI response
     const aiResponse = await generateAIResponse(messages);
-
-    // Send email notification with chat transcript
-    const updatedHistory = [...history, { content: message, isUser: true }, { content: aiResponse, isUser: false }];
-    await sendEmailNotification(updatedHistory);
 
     return new Response(JSON.stringify({ response: aiResponse }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
