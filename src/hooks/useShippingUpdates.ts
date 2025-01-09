@@ -17,7 +17,7 @@ export const useShippingUpdates = () => {
           event: '*',
           schema: 'public',
           table: 'scheduled_shipping_dates'
-        },
+        } as any, // Type assertion to fix the error
         (payload: RealtimeShippingPayload) => {
           console.log('Real-time update received:', payload);
           queryClient.invalidateQueries({ queryKey: ["scheduled-shipping-dates"] });

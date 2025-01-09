@@ -5,7 +5,7 @@ import { ShipmentDetails } from "@/components/shipping-calendar/ShipmentDetails"
 import { LocationFilters } from "@/components/shipping-calendar/LocationFilters";
 import { useShippingDates } from "@/hooks/useShippingDates";
 import { useShippingUpdates } from "@/hooks/useShippingUpdates";
-import type { ShippingDate } from "@/types/calendar";
+import { startOfDay } from "date-fns"; // Add missing import
 
 const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
