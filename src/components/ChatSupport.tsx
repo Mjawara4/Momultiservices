@@ -4,7 +4,8 @@ import { MessageCircle } from "lucide-react";
 import { ChatMessages } from "./chat/ChatMessages";
 import { ChatInput } from "./chat/ChatInput";
 import { useChat } from "@/hooks/useChat";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 export const ChatSupport = () => {
   const { messages, input, isLoading, setInput, sendMessage } = useChat();
@@ -14,17 +15,14 @@ export const ChatSupport = () => {
   const handleOpenChange = async (open: boolean) => {
     if (!open && messages.length > 0) {
       try {
-        await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat-support`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          },
-          body: JSON.stringify({
+        const { error } = await supabase.functions.invoke('chat-support', {
+          body: {
             type: 'conversation_end',
             history: messages
-          }),
+          },
         });
+
+        if (error) throw error;
       } catch (error) {
         console.error('Error sending conversation:', error);
       }
