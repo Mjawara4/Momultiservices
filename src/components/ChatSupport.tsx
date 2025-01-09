@@ -52,9 +52,10 @@ export const ChatSupport = () => {
         <Button
           variant="outline"
           size="icon"
-          className="fixed bottom-4 right-4 h-12 w-12 rounded-full shadow-lg z-50"
+          className="fixed bottom-4 right-4 h-12 w-auto px-4 rounded-full shadow-lg z-50 flex items-center gap-2"
         >
           <MessageCircle className="h-6 w-6" />
+          <span className="text-sm font-medium">Ask me</span>
         </Button>
       </SheetTrigger>
       <SheetContent className="w-full sm:max-w-[300px] p-0">
