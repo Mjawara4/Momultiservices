@@ -1,5 +1,5 @@
 import React from "react";
-import { format, parseISO, isFuture, isToday, startOfDay } from "date-fns";
+import { format, parseISO, isFuture, isToday } from "date-fns";
 import { Tables } from "@/integrations/supabase/types";
 
 interface ShipmentDetailsProps {
@@ -8,21 +8,28 @@ interface ShipmentDetailsProps {
 }
 
 export const ShipmentDetails = ({ shipments, date }: ShipmentDetailsProps) => {
-  console.log("All shipments:", shipments); // Debug log
-  console.log("Selected date:", date); // Debug log
+  console.log("All shipments:", shipments);
+  console.log("Selected date:", date);
 
   // Filter shipments for the selected date
   const filteredShipments = shipments.filter((shipment) => {
+    // Parse the shipping date string to a Date object
     const shipmentDate = parseISO(shipment.shipping_date);
-    const selectedDate = startOfDay(date);
+    
+    // Format both dates to YYYY-MM-DD for comparison
+    const formattedShipmentDate = format(shipmentDate, 'yyyy-MM-dd');
+    const formattedSelectedDate = format(date, 'yyyy-MM-dd');
+    
     console.log("Comparing dates:", {
-      shipmentDate: format(shipmentDate, 'yyyy-MM-dd'),
-      selectedDate: format(selectedDate, 'yyyy-MM-dd')
-    }); // Debug log
-    return format(shipmentDate, 'yyyy-MM-dd') === format(selectedDate, 'yyyy-MM-dd');
+      shipmentDate: formattedShipmentDate,
+      selectedDate: formattedSelectedDate,
+      isMatch: formattedShipmentDate === formattedSelectedDate
+    });
+
+    return formattedShipmentDate === formattedSelectedDate;
   });
 
-  console.log("Filtered shipments:", filteredShipments); // Debug log
+  console.log("Filtered shipments:", filteredShipments);
 
   return (
     <div className="space-y-2">
