@@ -2,18 +2,23 @@ import { useQuery } from "@tanstack/react-query";
 import { Calendar } from "@/components/ui/calendar";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
+import { ShipmentDetails } from "@/components/shipping-calendar/ShipmentDetails";
+import { useState } from "react";
 
 const CalendarPage = () => {
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+
   const { data: shipments, isLoading } = useQuery({
-    queryKey: ["shipments"],
+    queryKey: ["scheduled-shipping-dates"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("ship_site_data")
+        .from("scheduled_shipping_dates")
         .select("*")
-        .eq("type", "shipping");
+        .order('shipping_date', { ascending: true });
       
       if (error) throw error;
+      console.log("Fetched shipments:", data);
       return data;
     },
   });
@@ -29,24 +34,16 @@ const CalendarPage = () => {
         <Card className="p-6">
           <Calendar
             mode="single"
+            selected={selectedDate}
+            onSelect={setSelectedDate}
             className="rounded-md border"
           />
         </Card>
         <Card className="p-6">
-          <h2 className="text-2xl font-semibold mb-4">Upcoming Shipments</h2>
-          <div className="space-y-4">
-            {shipments?.map((shipment) => (
-              <div key={shipment.id} className="border-b pb-4">
-                <p className="font-medium">{shipment.name}</p>
-                <p className="text-sm text-muted-foreground">
-                  From: {shipment.from_location}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  To: {shipment.to_location}
-                </p>
-              </div>
-            ))}
-          </div>
+          <ShipmentDetails 
+            shipments={shipments || []} 
+            date={selectedDate || new Date()} 
+          />
         </Card>
       </div>
     </div>

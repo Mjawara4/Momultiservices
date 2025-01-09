@@ -7,19 +7,18 @@ interface ShipmentDetailsProps {
   date: Date;
 }
 
-export const ShipmentDetails = ({ shipments, date }: ShipmentDetailsProps) => {
+export const ShipmentDetails = ({ shipments }: ShipmentDetailsProps) => {
   return (
     <div className="space-y-2">
-      <h3 className="font-semibold">
-        {date ? format(date, "MMMM d, yyyy") : "Select a date"}
-      </h3>
+      <h3 className="font-semibold">All Scheduled Shipments</h3>
       <div className="space-y-1">
         {shipments.length > 0 ? (
           shipments.map((shipment) => (
             <div key={shipment.id} className="p-2 bg-secondary rounded-md">
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="font-medium">From: {shipment.from_location}</p>
+                  <p className="font-medium">Date: {format(new Date(shipment.shipping_date), "MMMM d, yyyy")}</p>
+                  <p>From: {shipment.from_location}</p>
                   <p className="text-sm text-muted-foreground">
                     To: {shipment.to_location}
                   </p>
