@@ -10,10 +10,10 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-6 md:py-12 lg:py-16">
+      <div className="container mx-auto px-4 py-6 md:py-12">
         {/* Hero Section */}
-        <div className="space-y-4 mb-8 md:mb-12 lg:mb-16">
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center">
+        <div className="space-y-4 mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold text-center">
             Welcome to Our Shipping Solutions
           </h1>
           <p className="text-base md:text-lg text-muted-foreground text-center max-w-2xl mx-auto">
@@ -22,7 +22,7 @@ const Index = () => {
         </div>
         
         {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
           {/* Express GP Service */}
           <Card 
             className="group cursor-pointer hover:shadow-lg transition-all overflow-hidden relative aspect-[4/3] bg-cover bg-center" 
@@ -102,7 +102,7 @@ const Index = () => {
       <TestimonialsSection />
 
       {/* Footer */}
-      <footer className="bg-secondary py-8 mt-12">
+      <footer className="bg-secondary py-8">
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center justify-center space-y-4">
             <div className="flex items-center justify-center space-x-6">
