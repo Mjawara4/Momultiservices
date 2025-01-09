@@ -18,7 +18,10 @@ const testimonials = [
     name: "Mabula",
     message: "I got my package 📦 thanks so much",
   },
-  // More testimonials can be added here later
+  {
+    name: "Aminata",
+    message: "Thank you so much 😊, Package received.",
+  },
 ];
 
 export function TestimonialsSection() {
