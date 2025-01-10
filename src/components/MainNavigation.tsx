@@ -1,4 +1,4 @@
-import { Home, Phone, Info, Package, Menu, ShoppingCart, Calendar } from "lucide-react";
+import { Home, Phone, Info, Package, Menu, ShoppingCart, Calendar, Truck } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -33,6 +33,11 @@ const navigationItems = [
     icon: ShoppingCart,
   },
   {
+    title: "Track Shipment",
+    url: "/track",
+    icon: Truck,
+  },
+  {
     title: "Contact",
     url: "/inquire",
     icon: Phone,
@@ -41,6 +46,14 @@ const navigationItems = [
     title: "About Us",
     url: "/about",
     icon: Info,
+  },
+];
+
+const adminItems = [
+  {
+    title: "Manage Tracking",
+    url: "/admin/tracking",
+    icon: Truck,
   },
 ];
 
@@ -63,6 +76,24 @@ export function MainNavigation() {
           <SidebarGroupContent>
             <SidebarMenu>
               {navigationItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild tooltip={item.title}>
+                    <a href={item.url}>
+                      <item.icon className="h-4 w-4" />
+                      <span>{item.title}</span>
+                    </a>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Admin</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {adminItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild tooltip={item.title}>
                     <a href={item.url}>
