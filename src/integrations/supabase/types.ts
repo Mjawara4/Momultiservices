@@ -126,6 +126,50 @@ export type Database = {
         }
         Relationships: []
       }
+      shipping_tracking: {
+        Row: {
+          created_at: string | null
+          estimated_delivery: string | null
+          id: string
+          location: string | null
+          notes: string | null
+          shipping_id: string
+          status: string
+          tracking_number: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          estimated_delivery?: string | null
+          id?: string
+          location?: string | null
+          notes?: string | null
+          shipping_id: string
+          status?: string
+          tracking_number: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          estimated_delivery?: string | null
+          id?: string
+          location?: string | null
+          notes?: string | null
+          shipping_id?: string
+          status?: string
+          tracking_number?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shipping_tracking_shipping_id_fkey"
+            columns: ["shipping_id"]
+            isOneToOne: false
+            referencedRelation: "scheduled_shipping_dates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

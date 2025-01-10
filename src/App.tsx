@@ -11,6 +11,8 @@ import ShipCalendar from "./pages/ShipCalendar";
 import Inquire from "./pages/Inquire";
 import OrderForMe from "./pages/OrderForMe";
 import About from "./pages/About";
+import TrackShipment from "./pages/TrackShipment";
+import TrackingDetails from "./pages/TrackingDetails";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +30,8 @@ const App = () => (
           <Route path="/inquire" element={<Layout><Inquire /></Layout>} />
           <Route path="/order-for-me" element={<Layout><OrderForMe /></Layout>} />
           <Route path="/about" element={<Layout><About /></Layout>} />
+          <Route path="/track" element={<Layout><TrackShipment /></Layout>} />
+          <Route path="/track/:trackingNumber" element={<Layout><TrackingDetails /></Layout>} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
