@@ -51,15 +51,20 @@ const ManageTracking = () => {
         return;
       }
 
-      // Get a random shipping date to associate with
-      const { data: shippingDate, error: shippingError } = await supabase
+      // Create a new shipping date entry
+      const { data: shippingDate, error: shippingDateError } = await supabase
         .from('scheduled_shipping_dates')
-        .select('id, from_location, to_location')
-        .limit(1)
+        .insert([{
+          from_location: formData.from_location,
+          to_location: formData.to_location,
+          shipping_date: new Date().toISOString().split('T')[0], // Current date as default
+        }])
+        .select()
         .single();
 
-      if (shippingError) throw shippingError;
+      if (shippingDateError) throw shippingDateError;
 
+      // Create tracking entry with the new shipping_id
       const { data, error } = await supabase
         .from('shipping_tracking')
         .insert([{
@@ -131,7 +136,7 @@ const ManageTracking = () => {
                 value={formData.from_location}
                 onChange={handleInputChange}
                 placeholder="Origin"
-                disabled
+                required
               />
             </div>
 
@@ -145,7 +150,7 @@ const ManageTracking = () => {
                 value={formData.to_location}
                 onChange={handleInputChange}
                 placeholder="Destination"
-                disabled
+                required
               />
             </div>
           </div>
