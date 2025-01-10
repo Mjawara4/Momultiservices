@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -137,7 +137,7 @@ const TrackingDetails = () => {
         {trackingInfo.estimated_delivery && (
           <div>
             <h3 className="font-semibold text-sm text-muted-foreground">Estimated Delivery</h3>
-            <p>{format(new Date(trackingInfo.estimated_delivery), 'MMMM d, yyyy')}</p>
+            <p>{format(parseISO(trackingInfo.estimated_delivery), 'MMMM d, yyyy')}</p>
           </div>
         )}
 
