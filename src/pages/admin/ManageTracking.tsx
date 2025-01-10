@@ -24,6 +24,9 @@ const ManageTracking = () => {
     location: "",
     estimated_delivery: "",
     notes: "",
+    shipping_id: "",
+    from_location: "",
+    to_location: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,7 +37,7 @@ const ManageTracking = () => {
       // First, get a random shipping date to associate with
       const { data: shippingDate, error: shippingError } = await supabase
         .from('scheduled_shipping_dates')
-        .select('id')
+        .select('id, from_location, to_location')
         .limit(1)
         .single();
 
@@ -44,7 +47,7 @@ const ManageTracking = () => {
         .from('shipping_tracking')
         .insert([{
           tracking_number: formData.tracking_number,
-          shipping_id: shippingDate.id, // Use the retrieved shipping date ID
+          shipping_id: shippingDate.id,
           status: formData.status,
           location: formData.location || null,
           estimated_delivery: formData.estimated_delivery || null,
@@ -98,6 +101,36 @@ const ManageTracking = () => {
               placeholder="Enter tracking number"
               required
             />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label htmlFor="from_location" className="text-sm font-medium">
+                From Location
+              </label>
+              <Input
+                id="from_location"
+                name="from_location"
+                value={formData.from_location}
+                onChange={handleInputChange}
+                placeholder="Origin"
+                disabled
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label htmlFor="to_location" className="text-sm font-medium">
+                To Location
+              </label>
+              <Input
+                id="to_location"
+                name="to_location"
+                value={formData.to_location}
+                onChange={handleInputChange}
+                placeholder="Destination"
+                disabled
+              />
+            </div>
           </div>
 
           <div className="space-y-2">
