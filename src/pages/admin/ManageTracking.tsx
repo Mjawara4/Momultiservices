@@ -32,9 +32,22 @@ const ManageTracking = () => {
     setLoading(true);
 
     try {
+      // Validate shipping_id is a valid UUID
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+      if (!uuidRegex.test(formData.shipping_id)) {
+        throw new Error("Invalid shipping ID format. Please enter a valid UUID.");
+      }
+
       const { data, error } = await supabase
         .from('shipping_tracking')
-        .insert([formData])
+        .insert([{
+          tracking_number: formData.tracking_number,
+          shipping_id: formData.shipping_id,
+          status: formData.status,
+          location: formData.location || null,
+          estimated_delivery: formData.estimated_delivery || null,
+          notes: formData.notes || null,
+        }])
         .select()
         .single();
 
@@ -46,11 +59,11 @@ const ManageTracking = () => {
       });
 
       navigate(`/track/${data.tracking_number}`);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error adding tracking:', error);
       toast({
         title: "Error",
-        description: "Failed to add tracking information. Please try again.",
+        description: error.message || "Failed to add tracking information. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -87,16 +100,21 @@ const ManageTracking = () => {
 
           <div className="space-y-2">
             <label htmlFor="shipping_id" className="text-sm font-medium">
-              Shipping ID
+              Shipping ID (UUID format)
             </label>
             <Input
               id="shipping_id"
               name="shipping_id"
               value={formData.shipping_id}
               onChange={handleInputChange}
-              placeholder="Enter shipping ID"
+              placeholder="Enter shipping ID (UUID format)"
               required
+              pattern="^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+              title="Please enter a valid UUID"
             />
+            <p className="text-xs text-gray-500">
+              Example format: 123e4567-e89b-12d3-a456-426614174000
+            </p>
           </div>
 
           <div className="space-y-2">
