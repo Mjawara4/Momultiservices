@@ -30,7 +30,12 @@ const TrackingDetails = () => {
   useEffect(() => {
     const fetchTrackingInfo = async () => {
       try {
-        const { data, error } = await supabase
+        if (!trackingNumber) {
+          setError("No tracking number provided");
+          return;
+        }
+
+        const { data, error: queryError } = await supabase
           .from('shipping_tracking')
           .select(`
             tracking_number,
@@ -47,7 +52,16 @@ const TrackingDetails = () => {
           .eq('tracking_number', trackingNumber)
           .maybeSingle();
 
-        if (error) throw error;
+        if (queryError) {
+          console.error('Error fetching tracking info:', queryError);
+          setError('Unable to fetch tracking information');
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: "Unable to fetch tracking information",
+          });
+          return;
+        }
         
         if (!data) {
           setError(`No tracking information found for number: ${trackingNumber}`);
@@ -73,9 +87,7 @@ const TrackingDetails = () => {
       }
     };
 
-    if (trackingNumber) {
-      fetchTrackingInfo();
-    }
+    fetchTrackingInfo();
   }, [trackingNumber, toast]);
 
   if (loading) {
