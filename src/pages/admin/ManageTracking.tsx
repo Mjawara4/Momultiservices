@@ -20,7 +20,6 @@ const ManageTracking = () => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     tracking_number: "",
-    shipping_id: "",
     status: "pending",
     location: "",
     estimated_delivery: "",
@@ -32,17 +31,20 @@ const ManageTracking = () => {
     setLoading(true);
 
     try {
-      // Validate shipping_id is a valid UUID
-      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-      if (!uuidRegex.test(formData.shipping_id)) {
-        throw new Error("Invalid shipping ID format. Please enter a valid UUID.");
-      }
+      // First, get a random shipping date to associate with
+      const { data: shippingDate, error: shippingError } = await supabase
+        .from('scheduled_shipping_dates')
+        .select('id')
+        .limit(1)
+        .single();
+
+      if (shippingError) throw shippingError;
 
       const { data, error } = await supabase
         .from('shipping_tracking')
         .insert([{
           tracking_number: formData.tracking_number,
-          shipping_id: formData.shipping_id,
+          shipping_id: shippingDate.id, // Use the retrieved shipping date ID
           status: formData.status,
           location: formData.location || null,
           estimated_delivery: formData.estimated_delivery || null,
@@ -96,25 +98,6 @@ const ManageTracking = () => {
               placeholder="Enter tracking number"
               required
             />
-          </div>
-
-          <div className="space-y-2">
-            <label htmlFor="shipping_id" className="text-sm font-medium">
-              Shipping ID (UUID format)
-            </label>
-            <Input
-              id="shipping_id"
-              name="shipping_id"
-              value={formData.shipping_id}
-              onChange={handleInputChange}
-              placeholder="Enter shipping ID (UUID format)"
-              required
-              pattern="^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
-              title="Please enter a valid UUID"
-            />
-            <p className="text-xs text-gray-500">
-              Example format: 123e4567-e89b-12d3-a456-426614174000
-            </p>
           </div>
 
           <div className="space-y-2">
