@@ -19,6 +19,17 @@ const Index = () => {
           <p className="text-sm md:text-lg text-muted-foreground text-center max-w-md mx-auto px-2">
             Your trusted partner for all logistics needs
           </p>
+          
+          {/* Track Shipment Button */}
+          <div className="flex justify-center">
+            <Button 
+              variant="outline"
+              onClick={() => navigate("/track")}
+              className="mt-4"
+            >
+              Track Your Shipment
+            </Button>
+          </div>
         </div>
         
         {/* Services Grid */}
@@ -97,11 +108,11 @@ const Index = () => {
             </div>
           </Card>
         </div>
-      </div>
-      
+        
+        {/* Testimonials Section */}
       <TestimonialsSection />
-
-      {/* Footer */}
+        
+        {/* Footer */}
       <footer className="bg-secondary py-4 md:py-6 w-full">
         <div className="px-2 md:px-4">
           <div className="flex flex-col items-center justify-center space-y-4 md:space-y-6">
@@ -155,6 +166,7 @@ const Index = () => {
           </div>
         </div>
       </footer>
+      </div>
     </div>
   );
 };
