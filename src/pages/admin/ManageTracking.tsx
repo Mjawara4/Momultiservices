@@ -34,7 +34,24 @@ const ManageTracking = () => {
     setLoading(true);
 
     try {
-      // First, get a random shipping date to associate with
+      // First check if tracking number already exists
+      const { data: existingTracking } = await supabase
+        .from('shipping_tracking')
+        .select('tracking_number')
+        .eq('tracking_number', formData.tracking_number)
+        .single();
+
+      if (existingTracking) {
+        toast({
+          title: "Error",
+          description: "This tracking number already exists.",
+          variant: "destructive",
+        });
+        setLoading(false);
+        return;
+      }
+
+      // Get a random shipping date to associate with
       const { data: shippingDate, error: shippingError } = await supabase
         .from('scheduled_shipping_dates')
         .select('id, from_location, to_location')
