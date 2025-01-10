@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface TrackingInfo {
   tracking_number: string;
@@ -23,6 +24,7 @@ const TrackingDetails = () => {
   const [loading, setLoading] = useState(true);
   const [trackingInfo, setTrackingInfo] = useState<TrackingInfo | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchTrackingInfo = async () => {
@@ -42,13 +44,29 @@ const TrackingDetails = () => {
             )
           `)
           .eq('tracking_number', trackingNumber)
-          .single();
+          .maybeSingle();
 
         if (error) throw error;
+        
+        if (!data) {
+          setError(`No tracking information found for number: ${trackingNumber}`);
+          toast({
+            variant: "destructive",
+            title: "Not Found",
+            description: `No tracking information found for number: ${trackingNumber}`,
+          });
+          return;
+        }
+
         setTrackingInfo(data);
       } catch (err) {
         console.error('Error fetching tracking info:', err);
         setError('Unable to find tracking information');
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Unable to fetch tracking information",
+        });
       } finally {
         setLoading(false);
       }
@@ -57,7 +75,7 @@ const TrackingDetails = () => {
     if (trackingNumber) {
       fetchTrackingInfo();
     }
-  }, [trackingNumber]);
+  }, [trackingNumber, toast]);
 
   if (loading) {
     return (
