@@ -54,6 +54,27 @@ Core Services:
    - Real-time updates on shipping dates
    - Automated notifications
 
+Shipment Tracking:
+- Every shipment receives a unique tracking number
+- Track your shipment online through our website
+- Real-time status updates available
+- Location tracking from USA to Gambia
+- Estimated delivery dates provided
+- WhatsApp updates on shipment progress
+- Email notifications for major status changes
+- Customer support available to assist with tracking inquiries
+
+Payment Information:
+- Two convenient payment methods:
+  1. Cash payments accepted in person
+  2. Zelle payments accepted for remote transactions
+- No hidden fees
+- Transparent pricing
+- Payment required before shipping
+- Volume discounts available
+- Flexible payment plans for regular customers
+- Receipts provided for all transactions
+
 Additional Services:
 - Free shipping consultation
 - Package consolidation
@@ -70,14 +91,6 @@ Shipping Restrictions:
 - Weight limits apply
 - Size restrictions may apply
 - Proper documentation required
-
-Payment Information:
-- Accept all major payment methods
-- Secure payment processing
-- Transparent pricing with no hidden fees
-- Deposit required for large shipments
-- Volume discounts available
-- Flexible payment plans for regular customers
 
 Customer Support:
 - 24/7 availability via WhatsApp
@@ -99,7 +112,8 @@ Response Guidelines:
 - Emphasize our commitment to reliable service
 - Highlight our competitive pricing
 - Mention our door-to-door delivery service
-- Explain our tracking system when relevant`;
+- Explain our tracking system when relevant
+- Clarify payment methods (Cash and Zelle) when discussing payments`;
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
