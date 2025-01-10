@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { format, parseISO } from "date-fns";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 interface TrackingInfo {
   tracking_number: string;
@@ -88,11 +89,12 @@ const TrackingDetails = () => {
   if (error || !trackingInfo) {
     return (
       <div className="container max-w-2xl mx-auto p-6">
-        <Card className="p-6">
-          <div className="text-center text-red-500">
+        <Alert variant="destructive">
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>
             {error || 'Tracking information not found'}
-          </div>
-        </Card>
+          </AlertDescription>
+        </Alert>
       </div>
     );
   }
