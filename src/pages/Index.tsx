@@ -27,7 +27,7 @@ const Index = () => {
               onClick={() => navigate("/track")}
               className="mt-4"
             >
-              Track Your Shipment
+              Track Your Package
             </Button>
           </div>
         </div>
