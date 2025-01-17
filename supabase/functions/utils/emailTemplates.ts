@@ -7,7 +7,12 @@ export const generateShippingEmailHtml = (data: any) => {
     <p><strong>To:</strong> ${data.to_location}</p>
     <p><strong>Weight:</strong> ${data.weight} lbs</p>
     <p><strong>Package Type:</strong> ${data.package_type}</p>
-    <p><strong>Estimated Price:</strong> $${data.estimated_price}</p>
+    <p><strong>Original Price:</strong> $${data.original_price}</p>
+    ${data.discount_applied ? `
+    <p><strong>Discount Code Used:</strong> ${data.discount_code}</p>
+    <p><strong>Discount Applied:</strong> ${data.discount_applied}</p>
+    ` : ''}
+    <p><strong>Final Price:</strong> $${data.estimated_price}</p>
   `;
 };
 

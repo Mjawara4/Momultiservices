@@ -67,7 +67,8 @@ export const submitShippingRequest = async (values: ShippingFormData, discountPe
         package_type: values.packageType,
         estimated_price: estimatedPrice,
         original_price: originalPrice,
-        discount_applied: discountPercentage ? `${discountPercentage}%` : null
+        discount_applied: discountPercentage ? `${discountPercentage}%` : null,
+        discount_code: values.discountCode ? values.discountCode.toUpperCase() : null
       }
     }
   });

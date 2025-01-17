@@ -207,12 +207,12 @@ export type Database = {
     Functions: {
       create_discount_code: {
         Args: {
-          discount_percentage?: number
-          days_valid?: number
+          p_discount_percentage?: number
+          p_days_valid?: number
         }
         Returns: {
-          code: string
-          expires_at: string
+          generated_code: string
+          code_expires_at: string
         }[]
       }
       generate_discount_code: {
