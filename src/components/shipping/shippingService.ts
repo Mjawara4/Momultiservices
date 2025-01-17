@@ -11,9 +11,28 @@ const calculatePrice = (weight: number, packageType: string) => {
   }
 };
 
-export const submitShippingRequest = async (values: ShippingFormData) => {
-  const estimatedPrice = calculatePrice(values.weight, values.packageType);
+export const submitShippingRequest = async (values: ShippingFormData, discountPercentage: number | null) => {
+  const originalPrice = calculatePrice(values.weight, values.packageType);
+  const estimatedPrice = discountPercentage 
+    ? originalPrice * (1 - discountPercentage / 100) 
+    : originalPrice;
   
+  // If there's a discount code, mark it as used
+  if (values.discountCode && discountPercentage) {
+    const { error: discountError } = await supabase
+      .from('shipping_discount_codes')
+      .update({ 
+        is_used: true,
+        used_at: new Date().toISOString()
+      })
+      .eq('code', values.discountCode.toUpperCase());
+
+    if (discountError) {
+      console.error('Error updating discount code:', discountError);
+      throw new Error('Failed to process discount code');
+    }
+  }
+
   // Save to Supabase
   const { data, error: supabaseError } = await supabase
     .from('ship_site_data')
@@ -46,7 +65,9 @@ export const submitShippingRequest = async (values: ShippingFormData) => {
         to_location: values.toLocation,
         weight: values.weight,
         package_type: values.packageType,
-        estimated_price: estimatedPrice
+        estimated_price: estimatedPrice,
+        original_price: originalPrice,
+        discount_applied: discountPercentage ? `${discountPercentage}%` : null
       }
     }
   });
@@ -57,5 +78,5 @@ export const submitShippingRequest = async (values: ShippingFormData) => {
   }
 
   console.log('Shipping request submitted successfully:', data);
-  return { estimatedPrice, data };
+  return { estimatedPrice, originalPrice, data };
 };

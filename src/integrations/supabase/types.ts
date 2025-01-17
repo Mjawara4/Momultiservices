@@ -126,6 +126,36 @@ export type Database = {
         }
         Relationships: []
       }
+      shipping_discount_codes: {
+        Row: {
+          code: string
+          created_at: string | null
+          discount_percentage: number
+          expires_at: string | null
+          id: string
+          is_used: boolean | null
+          used_at: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string | null
+          discount_percentage: number
+          expires_at?: string | null
+          id?: string
+          is_used?: boolean | null
+          used_at?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string | null
+          discount_percentage?: number
+          expires_at?: string | null
+          id?: string
+          is_used?: boolean | null
+          used_at?: string | null
+        }
+        Relationships: []
+      }
       shipping_tracking: {
         Row: {
           created_at: string | null
@@ -175,7 +205,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      create_discount_code: {
+        Args: {
+          discount_percentage?: number
+          days_valid?: number
+        }
+        Returns: {
+          code: string
+          expires_at: string
+        }[]
+      }
+      generate_discount_code: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

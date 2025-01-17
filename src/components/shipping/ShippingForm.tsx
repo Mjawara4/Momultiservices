@@ -8,6 +8,8 @@ import { submitShippingRequest } from "./shippingService";
 import { PersonalInfoFields } from "./PersonalInfoFields";
 import { LocationFields } from "./LocationFields";
 import { PackageFields } from "./PackageFields";
+import { DiscountCodeField } from "./DiscountCodeField";
+import { useState } from "react";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -16,12 +18,14 @@ const formSchema = z.object({
   toLocation: z.string().min(2, "Please enter a valid location"),
   weight: z.coerce.number().min(0, "Weight must be a positive number"),
   packageType: z.string().min(1, "Please select a package type"),
+  discountCode: z.string().optional(),
 });
 
 export type ShippingFormData = z.infer<typeof formSchema>;
 
 export const ShippingForm = () => {
   const { toast } = useToast();
+  const [discountPercentage, setDiscountPercentage] = useState<number | null>(null);
   
   const form = useForm<ShippingFormData>({
     resolver: zodResolver(formSchema),
@@ -32,18 +36,23 @@ export const ShippingForm = () => {
       toLocation: "",
       weight: 0,
       packageType: "",
+      discountCode: "",
     },
   });
 
   const onSubmit = async (values: ShippingFormData) => {
     try {
-      const result = await submitShippingRequest(values);
+      const result = await submitShippingRequest(values, discountPercentage);
       
       toast({
         title: "Shipping Request Submitted!",
         description: (
           <div className="space-y-2">
-            <p>Estimated price: ${result.estimatedPrice}</p>
+            <p>Original price: ${result.originalPrice}</p>
+            {discountPercentage && (
+              <p>Discount applied: {discountPercentage}% off</p>
+            )}
+            <p>Final price: ${result.estimatedPrice}</p>
             <p>From: {values.fromLocation}</p>
             <p>To: {values.toLocation}</p>
             <p>Package Type: {values.packageType}</p>
@@ -58,6 +67,7 @@ export const ShippingForm = () => {
       });
       
       form.reset();
+      setDiscountPercentage(null);
     } catch (error) {
       console.error('Error:', error);
       toast({
@@ -74,6 +84,10 @@ export const ShippingForm = () => {
         <PersonalInfoFields form={form} />
         <LocationFields form={form} />
         <PackageFields form={form} />
+        <DiscountCodeField 
+          form={form} 
+          onDiscountValidated={(percentage) => setDiscountPercentage(percentage)} 
+        />
         
         <Button type="submit" className="w-full">
           Calculate Shipping & Submit
